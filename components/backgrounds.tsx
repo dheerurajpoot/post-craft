@@ -3,11 +3,9 @@
 import type React from "react";
 
 import { useState, useEffect, useRef } from "react";
-import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Loader2, Upload, Palette } from "lucide-react";
-import { ColorPicker } from "@/components/color-picker";
 import type { CanvasElement } from "@/types/index";
 
 interface PexelsPhoto {
@@ -25,7 +23,10 @@ interface BackgroundsProps {
 	onSetBackgroundColor: (color: string) => void;
 }
 
-export function Backgrounds({ onAddBackground, onSetBackgroundColor }: BackgroundsProps) {
+export function Backgrounds({
+	onAddBackground,
+	onSetBackgroundColor,
+}: BackgroundsProps) {
 	const [query, setQuery] = useState("abstract background");
 	const [photos, setPhotos] = useState<PexelsPhoto[]>([]);
 	const [loading, setLoading] = useState(false);
@@ -98,36 +99,137 @@ export function Backgrounds({ onAddBackground, onSetBackgroundColor }: Backgroun
 		}
 	};
 
-	const applyBackgroundColor = () => {
-		onSetBackgroundColor(localBackgroundColor);
-	};
+	const presetColors = [
+		"#ffffff",
+		"#000000",
+		"#F8F9FA",
+		"#212529", // Mono
+		"#FF6B6B",
+		"#FA5252",
+		"#F03E3E", // Red
+		"#FCC419",
+		"#FAB005",
+		"#FD7E14", // Yellow/Orange
+		"#51CF66",
+		"#40C057",
+		"#2F9E44", // Green
+		"#339AF0",
+		"#228BE6",
+		"#1C7ED6", // Blue
+		"#845EF7",
+		"#7950F2",
+		"#7048E8", // Purple
+		"#F06595",
+		"#E64980",
+		"#D6336C", // Pink
+	];
 
 	return (
-		<div className='p-4 space-y-4'>
+		<div className='p-4 space-y-6 h-full overflow-y-auto pb-20'>
 			<div>
 				<h2 className='text-xl font-bold text-foreground mb-1'>
 					Backgrounds
 				</h2>
 				<p className='text-sm text-muted-foreground'>
-					Add images or colors as backgrounds
+					Pick a color or image
 				</p>
 			</div>
 
-			<div className='grid grid-cols-2 gap-2'>
-				<Button
-					onClick={() => fileInputRef.current?.click()}
-					variant='outline'
-					size='sm'>
-					<Upload className='w-4 h-4 mr-2' />
-					Upload Image
-				</Button>
-				<Button
-					onClick={() => setShowColorPicker(!showColorPicker)}
-					variant='outline'
-					size='sm'>
-					<Palette className='w-4 h-4 mr-2' />
-					BG Color
-				</Button>
+			{/* Colors Section */}
+			<div className='space-y-3'>
+				<div className='flex items-center justify-between'>
+					<h3 className='text-sm font-semibold text-foreground/80'>
+						Colors
+					</h3>
+					<div className='relative'>
+						<input
+							type='color'
+							value={localBackgroundColor}
+							onChange={(e) => {
+								setLocalBackgroundColor(e.target.value);
+								onSetBackgroundColor(e.target.value);
+							}}
+							className='absolute inset-0 opacity-0 cursor-pointer w-full h-full'
+						/>
+						<Button
+							variant='ghost'
+							size='sm'
+							className='h-6 text-xs px-2 gap-1 bg-muted/50'>
+							<Palette className='w-3 h-3' />
+							Custom
+						</Button>
+					</div>
+				</div>
+				<div className='flex flex-wrap gap-2'>
+					{presetColors.map((color) => (
+						<button
+							key={color}
+							onClick={() => onSetBackgroundColor(color)}
+							className='w-8 h-8 rounded-full border border-border shadow-sm transition-transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2'
+							style={{ backgroundColor: color }}
+							title={color}
+						/>
+					))}
+				</div>
+			</div>
+
+			{/* Images Section */}
+			<div className='space-y-3'>
+				<div className='flex items-center justify-between'>
+					<h3 className='text-sm font-semibold text-foreground/80'>
+						Images
+					</h3>
+					<Button
+						onClick={() => fileInputRef.current?.click()}
+						variant='ghost'
+						size='sm'
+						className='h-6 text-xs px-2 gap-1 bg-muted/50'>
+						<Upload className='w-3 h-3' />
+						Upload
+					</Button>
+				</div>
+
+				<form onSubmit={handleSearch} className='flex gap-2'>
+					<Input
+						value={query}
+						onChange={(e) => setQuery(e.target.value)}
+						placeholder='Search photos...'
+						className='h-9 bg-muted/30'
+					/>
+					<Button
+						type='submit'
+						size='icon'
+						className='h-9 w-9'
+						disabled={loading}>
+						{loading ? (
+							<Loader2 className='w-4 h-4 animate-spin' />
+						) : (
+							<Search className='w-4 h-4' />
+						)}
+					</Button>
+				</form>
+
+				{loading && (
+					<div className='flex items-center justify-center py-8'>
+						<Loader2 className='w-8 h-8 animate-spin text-primary' />
+					</div>
+				)}
+
+				<div className='grid grid-cols-2 gap-2'>
+					{photos.map((photo) => (
+						<div
+							key={photo.id}
+							className='relative group overflow-hidden rounded-xl cursor-pointer bg-muted aspect-square'
+							onClick={() => addImageToCanvas(photo.src.large)}>
+							<img
+								src={photo.src.medium || "/placeholder.svg"}
+								alt='Background'
+								className='w-full h-full object-cover transition-transform duration-500 group-hover:scale-110'
+							/>
+							<div className='absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors' />
+						</div>
+					))}
+				</div>
 			</div>
 
 			<input
@@ -137,64 +239,6 @@ export function Backgrounds({ onAddBackground, onSetBackgroundColor }: Backgroun
 				className='hidden'
 				onChange={handleImageUpload}
 			/>
-
-			{showColorPicker && (
-				<div className='space-y-2'>
-					<ColorPicker
-						color={localBackgroundColor}
-						onChange={setLocalBackgroundColor}
-						onClose={() => setShowColorPicker(false)}
-					/>
-					<Button
-						onClick={applyBackgroundColor}
-						className='w-full'
-						size='sm'>
-						Apply Background Color
-					</Button>
-				</div>
-			)}
-
-			<form onSubmit={handleSearch} className='flex gap-2'>
-				<Input
-					value={query}
-					onChange={(e) => setQuery(e.target.value)}
-					placeholder='Search backgrounds...'
-					className='flex-1'
-				/>
-				<Button type='submit' size='icon' disabled={loading}>
-					{loading ? (
-						<Loader2 className='w-4 h-4 animate-spin' />
-					) : (
-						<Search className='w-4 h-4' />
-					)}
-				</Button>
-			</form>
-
-			{loading && (
-				<div className='flex items-center justify-center py-12'>
-					<Loader2 className='w-8 h-8 animate-spin text-primary' />
-				</div>
-			)}
-
-			<div className='grid grid-cols-2 gap-3'>
-				{photos.map((photo) => (
-					<Card
-						key={photo.id}
-						className='overflow-hidden p-0 cursor-pointer hover:shadow-lg transition-shadow'
-						onClick={() => addImageToCanvas(photo.src.large)}>
-						<img
-							src={photo.src.medium || "/placeholder.svg"}
-							alt={photo.photographer}
-							className='w-full aspect-square object-cover'
-						/>
-						<div className='p-2 bg-card'>
-							<p className='text-xs text-muted-foreground truncate'>
-								By {photo.photographer}
-							</p>
-						</div>
-					</Card>
-				))}
-			</div>
 		</div>
 	);
 }

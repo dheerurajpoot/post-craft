@@ -179,23 +179,25 @@ export function Editor({
 					aspectRatio={aspectRatio}
 					onChange={setAspectRatio}
 				/>
-				{/* <Button
+			</div>
+
+			<div className='flex'>
+				<Button
+					onClick={addText}
+					size='sm'
+					variant='outline'
+					className='flex-1 bg-transparent border-dashed'>
+					<Plus className='w-4 h-4 mr-2' />
+					Add Text
+				</Button>
+				<Button
 					variant='ghost'
 					size='sm'
 					onClick={clearCanvas}
 					className='text-destructive hover:text-destructive hover:bg-destructive/10'>
-					<Trash2 className='w-4 h-4 mr-2' />
-				</Button> */}
+					<Trash2 className='w-4 h-4' /> Clear All
+				</Button>
 			</div>
-
-			<Button
-				onClick={addText}
-				size='sm'
-				variant='outline'
-				className='w-full bg-transparent border-dashed'>
-				<Plus className='w-4 h-4 mr-2' />
-				Add Text
-			</Button>
 
 			<div className='flex-1 min-h-0 border rounded-lg overflow-hidden bg-gray-50 dark:bg-gray-900 relative'>
 				<Canvas
