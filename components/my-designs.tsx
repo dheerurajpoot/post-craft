@@ -1,5 +1,4 @@
 "use client"
-
 import type React from "react"
 
 import { useState, useEffect } from "react"
@@ -14,7 +13,11 @@ interface SavedDesign {
   aspectRatio: string
 }
 
-export function MyDesigns() {
+interface MyDesignsProps {
+  onLoadDesign: (design: any) => void
+}
+
+export function MyDesigns({ onLoadDesign }: MyDesignsProps) {
   const [designs, setDesigns] = useState<SavedDesign[]>([])
 
   useEffect(() => {
@@ -30,8 +33,7 @@ export function MyDesigns() {
       const allDesigns = JSON.parse(saved)
       const fullDesign = allDesigns.find((d: SavedDesign) => d.id === design.id)
       if (fullDesign) {
-        localStorage.setItem("currentDesign", JSON.stringify(fullDesign))
-        window.location.reload()
+        onLoadDesign(fullDesign)
       }
     }
   }

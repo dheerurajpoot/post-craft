@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Loader2, Upload, Palette } from "lucide-react";
 import { ColorPicker } from "@/components/color-picker";
+import type { CanvasElement } from "@/types/index";
 
 interface PexelsPhoto {
 	id: number;
@@ -19,12 +20,17 @@ interface PexelsPhoto {
 	photographer: string;
 }
 
-export function Backgrounds() {
+interface BackgroundsProps {
+	onAddBackground: (element: CanvasElement) => void;
+	onSetBackgroundColor: (color: string) => void;
+}
+
+export function Backgrounds({ onAddBackground, onSetBackgroundColor }: BackgroundsProps) {
 	const [query, setQuery] = useState("abstract background");
 	const [photos, setPhotos] = useState<PexelsPhoto[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [showColorPicker, setShowColorPicker] = useState(false);
-	const [backgroundColor, setBackgroundColor] = useState("#ffffff");
+	const [localBackgroundColor, setLocalBackgroundColor] = useState("#ffffff");
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	const searchImages = async (searchQuery: string) => {
@@ -60,10 +66,7 @@ export function Backgrounds() {
 	};
 
 	const addImageToCanvas = (imageUrl: string) => {
-		const currentDesign = JSON.parse(
-			localStorage.getItem("currentDesign") || "{}"
-		);
-		const newElement = {
+		const newElement: CanvasElement = {
 			id: Date.now().toString(),
 			type: "image",
 			src: imageUrl,
@@ -72,14 +75,7 @@ export function Backgrounds() {
 			width: 400,
 			height: 400,
 		};
-
-		currentDesign.elements = [
-			...(currentDesign.elements || []),
-			newElement,
-		];
-		localStorage.setItem("currentDesign", JSON.stringify(currentDesign));
-
-		alert("Background added! Switch to Editor tab to see it.");
+		onAddBackground(newElement);
 	};
 
 	const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,10 +83,7 @@ export function Backgrounds() {
 		if (file) {
 			const reader = new FileReader();
 			reader.onload = (event) => {
-				const currentDesign = JSON.parse(
-					localStorage.getItem("currentDesign") || "{}"
-				);
-				const newElement = {
+				const newElement: CanvasElement = {
 					id: Date.now().toString(),
 					type: "image",
 					src: event.target?.result as string,
@@ -99,27 +92,14 @@ export function Backgrounds() {
 					width: 400,
 					height: 400,
 				};
-				currentDesign.elements = [
-					...(currentDesign.elements || []),
-					newElement,
-				];
-				localStorage.setItem(
-					"currentDesign",
-					JSON.stringify(currentDesign)
-				);
-				alert("Image uploaded! Switch to Editor tab to see it.");
+				onAddBackground(newElement);
 			};
 			reader.readAsDataURL(file);
 		}
 	};
 
 	const applyBackgroundColor = () => {
-		const currentDesign = JSON.parse(
-			localStorage.getItem("currentDesign") || "{}"
-		);
-		currentDesign.backgroundColor = backgroundColor;
-		localStorage.setItem("currentDesign", JSON.stringify(currentDesign));
-		alert("Background color applied! Switch to Editor tab to see it.");
+		onSetBackgroundColor(localBackgroundColor);
 	};
 
 	return (
@@ -161,8 +141,8 @@ export function Backgrounds() {
 			{showColorPicker && (
 				<div className='space-y-2'>
 					<ColorPicker
-						color={backgroundColor}
-						onChange={setBackgroundColor}
+						color={localBackgroundColor}
+						onChange={setLocalBackgroundColor}
 						onClose={() => setShowColorPicker(false)}
 					/>
 					<Button

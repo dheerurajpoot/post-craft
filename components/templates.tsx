@@ -1,6 +1,7 @@
 "use client";
-import { Card } from "@/components/ui/card";
+
 import type { CanvasElement, AspectRatio } from "@/types";
+import { Badge } from "@/components/ui/badge";
 
 interface Template {
 	id: string;
@@ -13,597 +14,302 @@ interface Template {
 }
 
 const templates: Template[] = [
-	// Iconic Style - Image with overlay text
 	{
-		id: "iconic-1",
-		name: "Iconic Wisdom",
+		id: "modern-minimalist",
+		name: "Modern Minimalist",
 		category: "Quote",
 		aspectRatio: "1:1",
-		backgroundColor: "#2C3E50",
-		backgroundImage: "/images/iconic.jpg",
+		backgroundColor: "#ffffff",
 		elements: [
 			{
-				id: "logo-top",
+				id: "t1",
 				type: "text",
-				content: "QUOTEART",
-				x: 100,
-				y: 80,
-				fontSize: 32,
-				fontFamily: "Arial",
+				content: "Less is more.",
+				x: 540,
+				y: 540,
+				fontSize: 80,
+				fontFamily: "Inter",
 				fontWeight: "bold",
-				color: "#FFFFFF",
-				textAlign: "left",
-			},
-			{
-				id: "quote-mark",
-				type: "text",
-				content: "❝❝",
-				x: 540,
-				y: 280,
-				fontSize: 120,
-				fontFamily: "Georgia",
-				fontWeight: "bold",
-				color: "#FFFFFF",
+				color: "#000000",
 				textAlign: "center",
 			},
 			{
-				id: "main-quote",
+				id: "t2",
 				type: "text",
-				content: "Your Quote Here",
+				content: "- Mies van der Rohe",
 				x: 540,
-				y: 500,
-				fontSize: 56,
-				fontFamily: "Georgia",
-				fontWeight: "bold",
-				color: "#FFFFFF",
-				textAlign: "center",
-			},
-			{
-				id: "logo-bottom",
-				type: "text",
-				content: "QUOTEART",
-				x: 540,
-				y: 880,
-				fontSize: 28,
-				fontFamily: "Arial",
-				fontWeight: "normal",
-				color: "#FFFFFF",
-				textAlign: "center",
-			},
-		],
-	},
-	// Neutral Dark Style
-	{
-		id: "neutral-dark",
-		name: "Neutral Dark",
-		category: "Quote",
-		aspectRatio: "1:1",
-		backgroundColor: "#1A1A1A",
-		backgroundImage: "/images/neutral.png",
-		elements: [
-			{
-				id: "main-text",
-				type: "text",
-				content: "Your Powerful Quote",
-				x: 540,
-				y: 480,
-				fontSize: 62,
-				fontFamily: "Arial",
-				fontWeight: "bold",
-				color: "#FFFFFF",
-				textAlign: "center",
-			},
-			{
-				id: "accent-text",
-				type: "text",
-				content: "Highlighted Word",
-				x: 540,
-				y: 560,
-				fontSize: 62,
-				fontFamily: "Arial",
-				fontWeight: "bold",
-				color: "#FFD700",
-				textAlign: "center",
-			},
-			{
-				id: "brand",
-				type: "text",
-				content: "QUOTEART",
-				x: 540,
-				y: 720,
-				fontSize: 26,
-				fontFamily: "Arial",
-				fontWeight: "normal",
-				color: "#999999",
-				textAlign: "center",
-			},
-		],
-	},
-	// Minimal Light Style
-	{
-		id: "minimal-light",
-		name: "Minimal Light",
-		category: "Quote",
-		aspectRatio: "1:1",
-		backgroundColor: "#F5F5F0",
-		backgroundImage: "/images/minimal.png",
-		elements: [
-			{
-				id: "quote-text",
-				type: "text",
-				content: "Simple Yet Powerful Words",
-				x: 540,
-				y: 480,
-				fontSize: 52,
-				fontFamily: "Georgia",
-				fontWeight: "normal",
-				color: "#2D2D2D",
-				textAlign: "center",
-			},
-			{
-				id: "attribution",
-				type: "text",
-				content: "— QuoteArt",
-				x: 540,
-				y: 640,
-				fontSize: 28,
-				fontFamily: "Georgia",
+				y: 650,
+				fontSize: 30,
+				fontFamily: "Inter",
 				fontWeight: "normal",
 				color: "#666666",
 				textAlign: "center",
 			},
 		],
 	},
-	// Classic Photo Overlay
 	{
-		id: "classic-photo",
-		name: "Classic Photo",
-		category: "Quote",
-		aspectRatio: "1:1",
-		backgroundColor: "#000000",
-		backgroundImage: "/images/classic.jpg",
+		id: "dark-neon",
+		name: "Cyberpunk",
+		category: "Tech",
+		aspectRatio: "4:5",
+		backgroundColor: "#050505",
 		elements: [
 			{
-				id: "main-quote",
+				id: "t1",
 				type: "text",
-				content: "Inspiring Words Here",
+				content: "FUTURE",
 				x: 540,
-				y: 480,
-				fontSize: 58,
-				fontFamily: "Arial",
+				y: 400,
+				fontSize: 120,
+				fontFamily: "Courier New",
 				fontWeight: "bold",
-				color: "#FFFFFF",
+				color: "#00ff9d",
 				textAlign: "center",
 			},
 			{
-				id: "brand",
+				id: "t2",
 				type: "text",
-				content: "— QuoteArt",
+				content: "IS NOW",
 				x: 540,
-				y: 620,
-				fontSize: 24,
-				fontFamily: "Arial",
-				fontWeight: "normal",
-				color: "#FFFFFF",
+				y: 550,
+				fontSize: 120,
+				fontFamily: "Courier New",
+				fontWeight: "bold",
+				color: "#d600ff",
 				textAlign: "center",
 			},
 		],
 	},
-	// Bold Black & Yellow
 	{
-		id: "bold-accent",
+		id: "bold-statement",
 		name: "Bold Statement",
-		category: "Quote",
+		category: "Promo",
 		aspectRatio: "1:1",
-		backgroundColor: "#000000",
-		backgroundImage: "/images/bold.png",
+		backgroundColor: "#FFD700",
 		elements: [
 			{
-				id: "quote",
+				id: "t1",
 				type: "text",
-				content: "Bold Message Here",
-				x: 540,
-				y: 480,
-				fontSize: 64,
-				fontFamily: "Arial",
-				fontWeight: "bold",
-				color: "#FFFFFF",
-				textAlign: "center",
-			},
-			{
-				id: "brand-accent",
-				type: "text",
-				content: "— QuoteArt",
-				x: 540,
-				y: 640,
-				fontSize: 32,
-				fontFamily: "Arial",
-				fontWeight: "bold",
-				color: "#FFD700",
-				textAlign: "center",
-			},
-		],
-	},
-	// Elegant Simple
-	{
-		id: "elegant-simple",
-		name: "Elegant",
-		category: "Quote",
-		aspectRatio: "1:1",
-		backgroundColor: "#000000",
-		backgroundImage: "/images/elegent.png",
-		elements: [
-			{
-				id: "elegant-quote",
-				type: "text",
-				content: "Elegant Words of Wisdom",
-				x: 540,
-				y: 500,
-				fontSize: 54,
-				fontFamily: "Georgia",
-				fontWeight: "normal",
-				color: "#FFFFFF",
-				textAlign: "center",
-			},
-			{
-				id: "brand",
-				type: "text",
-				content: "— QuoteArt",
-				x: 540,
-				y: 640,
-				fontSize: 26,
-				fontFamily: "Georgia",
-				fontWeight: "normal",
-				color: "#CCCCCC",
-				textAlign: "center",
-			},
-		],
-	},
-	// Modern Gradient Story
-	{
-		id: "modern-story",
-		name: "Modern Story",
-		category: "Quote",
-		aspectRatio: "9:16",
-		backgroundColor: "#667EEA",
-		backgroundImage: "/purple-gradient-abstract-background.jpg",
-		elements: [
-			{
-				id: "top-accent",
-				type: "text",
-				content: "━━━",
-				x: 540,
-				y: 600,
-				fontSize: 48,
-				fontFamily: "Arial",
-				fontWeight: "bold",
-				color: "#FFFFFF",
-				textAlign: "center",
-			},
-			{
-				id: "main-quote",
-				type: "text",
-				content: "Your Story Matters",
-				x: 540,
-				y: 900,
-				fontSize: 68,
-				fontFamily: "Impact",
-				fontWeight: "bold",
-				color: "#FFFFFF",
-				textAlign: "center",
-			},
-			{
-				id: "sub-text",
-				type: "text",
-				content: "Share it with the world",
-				x: 540,
-				y: 1050,
-				fontSize: 36,
-				fontFamily: "Arial",
-				fontWeight: "normal",
-				color: "#FFFFFF",
-				textAlign: "center",
-			},
-			{
-				id: "bottom-accent",
-				type: "text",
-				content: "━━━",
-				x: 540,
-				y: 1300,
-				fontSize: 48,
-				fontFamily: "Arial",
-				fontWeight: "bold",
-				color: "#FFFFFF",
-				textAlign: "center",
-			},
-		],
-	},
-	// Trendy Neon Vibe
-	{
-		id: "neon-vibe",
-		name: "Neon Vibe",
-		category: "Quote",
-		aspectRatio: "1:1",
-		backgroundColor: "#0F0F23",
-		elements: [
-			{
-				id: "glow-text",
-				type: "text",
-				content: "STAY MOTIVATED",
-				x: 540,
-				y: 480,
-				fontSize: 72,
-				fontFamily: "Impact",
-				fontWeight: "bold",
-				color: "#00F5FF",
-				textAlign: "center",
-			},
-			{
-				id: "sub-glow",
-				type: "text",
-				content: "Keep pushing forward",
-				x: 540,
-				y: 600,
-				fontSize: 36,
-				fontFamily: "Arial",
-				fontWeight: "normal",
-				color: "#FF00FF",
-				textAlign: "center",
-			},
-		],
-	},
-	// Instagram Feed Style
-	{
-		id: "insta-feed",
-		name: "Feed Post",
-		category: "Quote",
-		aspectRatio: "1:1",
-		backgroundColor: "#FAFAFA",
-		elements: [
-			{
-				id: "border-box",
-				type: "text",
-				content: "┌─────────────────┐",
+				content: "SALE",
 				x: 540,
 				y: 300,
-				fontSize: 32,
-				fontFamily: "Courier New",
-				fontWeight: "normal",
-				color: "#333333",
-				textAlign: "center",
-			},
-			{
-				id: "quote-content",
-				type: "text",
-				content: "Believe in yourself",
-				x: 540,
-				y: 500,
-				fontSize: 56,
-				fontFamily: "Arial",
+				fontSize: 200,
+				fontFamily: "Impact",
 				fontWeight: "bold",
 				color: "#000000",
 				textAlign: "center",
 			},
 			{
-				id: "border-bottom",
+				id: "t2",
 				type: "text",
-				content: "└─────────────────┘",
+				content: "50% OFF",
 				x: 540,
-				y: 700,
-				fontSize: 32,
-				fontFamily: "Courier New",
+				y: 600,
+				fontSize: 100,
+				fontFamily: "Arial",
+				fontWeight: "bold",
+				color: "#000000",
+				textAlign: "center",
+			},
+		],
+	},
+	{
+		id: "elegant-serif",
+		name: "Elegant Serif",
+		category: "Lifestyle",
+		aspectRatio: "9:16",
+		backgroundColor: "#f5f5f0",
+		elements: [
+			{
+				id: "t1",
+				type: "text",
+				content: "The Art of Living",
+				x: 540,
+				y: 800,
+				fontSize: 90,
+				fontFamily: "Georgia",
 				fontWeight: "normal",
+				fontStyle: "italic",
 				color: "#333333",
 				textAlign: "center",
 			},
 		],
 	},
-	// Motivational Workout
 	{
-		id: "workout-motivation",
-		name: "Workout Vibes",
-		category: "Quote",
+		id: "gradient-vibes",
+		name: "Good Vibes",
+		category: "Inspo",
 		aspectRatio: "4:5",
-		backgroundColor: "#FF6B35",
-		backgroundImage: "/red-orange-gradient-motivational-background.jpg",
+		backgroundColor: "#ff9a9e",
+		backgroundImage:
+			"linear-gradient(to top, #ff9a9e 0%, #fecfef 99%, #fecfef 100%)",
 		elements: [
 			{
-				id: "big-text",
+				id: "t1",
 				type: "text",
-				content: "NO EXCUSES",
+				content: "Good Vibes Only",
 				x: 540,
-				y: 600,
-				fontSize: 82,
-				fontFamily: "Impact",
-				fontWeight: "bold",
-				color: "#FFFFFF",
-				textAlign: "center",
-			},
-			{
-				id: "motivation",
-				type: "text",
-				content: "Train hard, stay consistent",
-				x: 540,
-				y: 750,
-				fontSize: 38,
-				fontFamily: "Arial",
-				fontWeight: "bold",
-				color: "#FFFFFF",
+				y: 675,
+				fontSize: 70,
+				fontFamily: "Brush Script MT",
+				fontWeight: "normal",
+				color: "#ffffff",
 				textAlign: "center",
 			},
 		],
 	},
-	// Nature Zen
 	{
-		id: "nature-zen",
-		name: "Nature Zen",
-		category: "Quote",
+		id: "retro-poster",
+		name: "Retro Poster",
+		category: "Vintage",
+		aspectRatio: "4:5",
+		backgroundColor: "#E6D2B5",
+		elements: [
+			{
+				id: "t1",
+				type: "text",
+				content: "VINTAGE",
+				x: 540,
+				y: 200,
+				fontSize: 100,
+				fontFamily: "Times New Roman",
+				fontWeight: "bold",
+				color: "#4A2C2C",
+				textAlign: "center",
+			},
+			{
+				id: "t2",
+				type: "text",
+				content: "COLLECTION",
+				x: 540,
+				y: 320,
+				fontSize: 60,
+				fontFamily: "Times New Roman",
+				fontWeight: "normal",
+				color: "#4A2C2C",
+				textAlign: "center",
+			},
+			{
+				id: "t3",
+				type: "text",
+				content: "EST. 1985",
+				x: 540,
+				y: 1100,
+				fontSize: 40,
+				fontFamily: "Courier New",
+				fontWeight: "bold",
+				color: "#4A2C2C",
+				textAlign: "center",
+			},
+		],
+	},
+	{
+		id: "soft-pastel",
+		name: "Soft Pastel",
+		category: "Calm",
 		aspectRatio: "1:1",
-		backgroundColor: "#2E8B57",
-		backgroundImage: "/green-gradient-nature-background.jpg",
+		backgroundColor: "#E0F7FA",
 		elements: [
 			{
-				id: "zen-quote",
+				id: "t1",
 				type: "text",
-				content: "Find Peace Within",
+				content: "Breathe",
 				x: 540,
-				y: 460,
-				fontSize: 64,
-				fontFamily: "Georgia",
+				y: 540,
+				fontSize: 90,
+				fontFamily: "Verdana",
 				fontWeight: "normal",
-				color: "#FFFFFF",
-				textAlign: "center",
-			},
-			{
-				id: "zen-sub",
-				type: "text",
-				content: "Breathe. Relax. Let Go.",
-				x: 540,
-				y: 580,
-				fontSize: 32,
-				fontFamily: "Georgia",
-				fontWeight: "normal",
-				color: "#E8F5E9",
+				color: "#006064",
 				textAlign: "center",
 			},
 		],
 	},
-	// Success Mindset - Updated
 	{
-		id: "success-mindset",
-		name: "Success Path",
+		id: "midnight-thought",
+		name: "Midnight",
 		category: "Quote",
 		aspectRatio: "9:16",
-		backgroundColor: "#FF6B6B",
-		backgroundImage: "/red-orange-gradient-motivational-background.jpg",
+		backgroundColor: "#0f172a",
 		elements: [
 			{
-				id: "success-title",
+				id: "t1",
 				type: "text",
-				content: "SUCCESS",
+				content: "Stars can't shine without darkness.",
 				x: 540,
-				y: 800,
-				fontSize: 90,
-				fontFamily: "Impact",
+				y: 960,
+				fontSize: 60,
+				fontFamily: "Arial",
 				fontWeight: "bold",
-				color: "#FFFFFF",
-				textAlign: "center",
-			},
-			{
-				id: "success-sub",
-				type: "text",
-				content: "Is A Journey, Not A Destination",
-				x: 540,
-				y: 950,
-				fontSize: 42,
-				fontFamily: "Georgia",
-				fontWeight: "normal",
-				color: "#FFFFFF",
+				color: "#e2e8f0",
 				textAlign: "center",
 			},
 		],
 	},
 ];
 
-export function Templates() {
-	const applyTemplate = (template: Template) => {
-		const imageElement = template.backgroundImage
-			? {
-					id: "bg-" + Date.now(),
-					type: "image" as const,
-					src: template.backgroundImage,
-					x: 0,
-					y: 0,
-					width: template.aspectRatio === "16:9" ? 1920 : 1080,
-					height:
-						template.aspectRatio === "1:1"
-							? 1080
-							: template.aspectRatio === "4:5"
-							? 1350
-							: template.aspectRatio === "9:16"
-							? 1920
-							: 1080,
-			  }
-			: null;
+interface TemplatesProps {
+	onSelectTemplate: (template: Template) => void;
+}
 
-		const design = {
-			elements: imageElement
-				? [imageElement, ...template.elements]
-				: template.elements,
-			aspectRatio: template.aspectRatio,
-			backgroundColor: template.backgroundColor,
-		};
-		localStorage.setItem("currentDesign", JSON.stringify(design));
-		window.location.reload();
-	};
-
+export function Templates({ onSelectTemplate }: TemplatesProps) {
 	return (
-		<div className='p-4 space-y-4'>
-			<div>
-				<h2 className='text-xl font-bold text-foreground mb-1'>
-					Templates
-				</h2>
-				<p className='text-sm text-muted-foreground'>
-					Choose a template to start creating your post
-				</p>
-			</div>
-
-			<div className='grid grid-cols-3 gap-2'>
+		<div className='p-4 h-full overflow-y-auto pb-20'>
+			<h2 className='text-lg font-bold mb-4'>Templates</h2>
+			<div className='columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4'>
 				{templates.map((template) => (
-					<Card
+					<div
 						key={template.id}
-						className='overflow-hidden  p-0 cursor-pointer hover:shadow-lg transition-shadow'
-						onClick={() => applyTemplate(template)}>
-						<div
-							className={`${
-								template.aspectRatio === "9:16"
-									? "aspect-[9/16]"
-									: template.aspectRatio === "4:5"
-									? "aspect-[4/5]"
-									: template.aspectRatio === "16:9"
-									? "aspect-[16/9]"
-									: "aspect-square"
-							} flex items-center justify-center p-2 relative`}
-							style={{
-								backgroundColor: template.backgroundColor,
-							}}>
-							{template.backgroundImage && (
-								<img
-									src={
-										template.backgroundImage ||
-										"/placeholder.svg"
-									}
-									alt=''
-									className='absolute inset-0 w-full h-full object-cover opacity-70'
+						className='break-inside-avoid mb-4'
+						onClick={() => onSelectTemplate(template)}>
+						<div className='group relative rounded-xl overflow-hidden cursor-pointer bg-muted border border-border shadow-sm hover:shadow-md transition-all duration-300'>
+							{/* Preview Container */}
+							<div
+								className='w-full relative'
+								style={{
+									aspectRatio: template.aspectRatio.replace(
+										":",
+										"/"
+									),
+								}}>
+								{/* Background Preview */}
+								<div
+									className='absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105'
+									style={{
+										backgroundColor:
+											template.backgroundColor,
+										backgroundImage:
+											template.backgroundImage
+												? template.backgroundImage.startsWith(
+														"linear"
+												  )
+													? template.backgroundImage
+													: `url(${template.backgroundImage})`
+												: undefined,
+									}}
 								/>
-							)}
-							<div className='text-center relative z-10'>
-								{template.elements.slice(0, 2).map((el) => (
-									<div
-										key={el.id}
-										style={{
-											color: el.color,
-											fontSize: `${
-												(el.fontSize || 40) / 10
-											}px`,
-											fontWeight: el.fontWeight,
-											fontFamily: el.fontFamily,
-										}}
-										className='truncate max-w-full px-1'>
-										{el.content}
+
+								{/* Gradient Overlay for Text Readability */}
+								<div className='absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80' />
+
+								{/* Content Info */}
+								<div className='absolute bottom-0 left-0 right-0 p-3 text-white'>
+									<h3 className='font-bold text-sm mb-1 leading-tight text-white/90'>
+										{template.name}
+									</h3>
+									<div className='flex items-center justify-between'>
+										<Badge
+											variant='secondary'
+											className='h-5 px-1.5 text-[9px] bg-white/20 text-white border-0 backdrop-blur-md uppercase tracking-wider font-medium hover:bg-white/30'>
+											{template.aspectRatio}
+										</Badge>
+										<span className='text-[9px] text-white/70 uppercase tracking-wider font-medium'>
+											{template.category}
+										</span>
 									</div>
-								))}
+								</div>
 							</div>
 						</div>
-						<div className='p-2 bg-card'>
-							<p className='font-medium text-xs text-card-foreground truncate'>
-								{template.name}
-							</p>
-							<p className='text-[10px] text-muted-foreground'>
-								{template.aspectRatio}
-							</p>
-						</div>
-					</Card>
+					</div>
 				))}
 			</div>
 		</div>

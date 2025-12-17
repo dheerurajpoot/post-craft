@@ -10,6 +10,7 @@ export interface CanvasElement {
   fontSize?: number
   fontFamily?: string
   fontWeight?: string
+  fontStyle?: string
   color?: string
   textAlign?: string
   // Image properties

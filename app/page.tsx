@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Editor } from "@/components/editor";
 import { Templates } from "@/components/templates";
 import { Backgrounds } from "@/components/backgrounds";
@@ -9,12 +9,110 @@ import { BottomNav } from "@/components/bottom-nav";
 import { Sidebar } from "@/components/sidebar";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import type { CanvasElement, AspectRatio } from "@/types/index";
 
 export default function Home() {
 	const [activeTab, setActiveTab] = useState<
 		"editor" | "templates" | "backgrounds" | "designs"
 	>("editor");
 	const [sidebarOpen, setSidebarOpen] = useState(false);
+
+	// Shared State
+	const [elements, setElements] = useState<CanvasElement[]>([]);
+	const [aspectRatio, setAspectRatio] = useState<AspectRatio>("1:1");
+	const [backgroundColor, setBackgroundColor] = useState("#ffffff");
+	const [selectedElement, setSelectedElement] = useState<string | null>(null);
+
+	// Load saved design from localStorage on mount
+	useEffect(() => {
+		const saved = localStorage.getItem("currentDesign");
+		if (saved) {
+			try {
+				const data = JSON.parse(saved);
+				setElements(data.elements || []);
+				setAspectRatio(data.aspectRatio || "1:1");
+				setBackgroundColor(data.backgroundColor || "#ffffff");
+			} catch (e) {
+				console.error("Failed to load saved design", e);
+			}
+		}
+	}, []);
+
+	// Auto-save to localStorage
+	useEffect(() => {
+		const design = {
+			elements,
+			aspectRatio,
+			backgroundColor,
+			timestamp: Date.now(),
+		};
+		localStorage.setItem("currentDesign", JSON.stringify(design));
+	}, [elements, aspectRatio, backgroundColor]);
+
+	const handleApplyTemplate = (template: any) => {
+		const imageElement = template.backgroundImage
+			? {
+					id: "bg-" + Date.now(),
+					type: "image" as const,
+					src: template.backgroundImage,
+					x: 0,
+					y: 0,
+					width: template.aspectRatio === "16:9" ? 1920 : 1080,
+					height:
+						template.aspectRatio === "1:1"
+							? 1080
+							: template.aspectRatio === "4:5"
+							? 1350
+							: template.aspectRatio === "9:16"
+							? 1920
+							: 1080,
+			  }
+			: null;
+
+		const newElements = imageElement
+			? [imageElement, ...template.elements]
+			: template.elements;
+
+		setElements(newElements);
+		setAspectRatio(template.aspectRatio);
+		setBackgroundColor(template.backgroundColor);
+		setActiveTab("editor");
+	};
+
+	const handleAddBackground = (newElement: CanvasElement) => {
+		// Resize background to fit current aspect ratio
+		const dimensions = {
+			"1:1": { width: 1080, height: 1080 },
+			"4:5": { width: 1080, height: 1350 },
+			"9:16": { width: 1080, height: 1920 },
+			"16:9": { width: 1920, height: 1080 },
+		}[aspectRatio];
+
+		const backgroundElement = {
+			...newElement,
+			x: 0,
+			y: 0,
+			width: dimensions.width,
+			height: dimensions.height,
+			id: "bg-" + Date.now(), // Ensure unique ID
+		};
+
+		// Add to the beginning (bottom layer) so it doesn't cover text
+		setElements((prev) => [backgroundElement, ...prev]);
+		setActiveTab("editor");
+	};
+
+	const handleSetBackgroundColor = (color: string) => {
+		setBackgroundColor(color);
+		setActiveTab("editor");
+	};
+
+	const handleLoadDesign = (design: any) => {
+		setElements(design.elements || []);
+		setAspectRatio(design.aspectRatio || "1:1");
+		setBackgroundColor(design.backgroundColor || "#ffffff");
+		setActiveTab("editor");
+	};
 
 	return (
 		<main className='h-screen flex flex-col bg-background overflow-hidden pb-16'>
@@ -34,10 +132,30 @@ export default function Home() {
 			</header>
 
 			<div className='flex-1 overflow-y-auto'>
-				{activeTab === "editor" && <Editor />}
-				{activeTab === "templates" && <Templates />}
-				{activeTab === "backgrounds" && <Backgrounds />}
-				{activeTab === "designs" && <MyDesigns />}
+				{activeTab === "editor" && (
+					<Editor
+						elements={elements}
+						setElements={setElements}
+						aspectRatio={aspectRatio}
+						setAspectRatio={setAspectRatio}
+						backgroundColor={backgroundColor}
+						setBackgroundColor={setBackgroundColor}
+						selectedElement={selectedElement}
+						setSelectedElement={setSelectedElement}
+					/>
+				)}
+				{activeTab === "templates" && (
+					<Templates onSelectTemplate={handleApplyTemplate} />
+				)}
+				{activeTab === "backgrounds" && (
+					<Backgrounds
+						onAddBackground={handleAddBackground}
+						onSetBackgroundColor={handleSetBackgroundColor}
+					/>
+				)}
+				{activeTab === "designs" && (
+					<MyDesigns onLoadDesign={handleLoadDesign} />
+				)}
 			</div>
 
 			<BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
