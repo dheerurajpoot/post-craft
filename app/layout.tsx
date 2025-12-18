@@ -13,19 +13,19 @@ export const metadata: Metadata = {
 	icons: {
 		icon: [
 			{
-				url: "/icon-light-32x32.png",
+				url: "/favicon.svg",
 				media: "(prefers-color-scheme: light)",
 			},
 			{
-				url: "/icon-dark-32x32.png",
+				url: "/favicon.svg",
 				media: "(prefers-color-scheme: dark)",
 			},
 			{
-				url: "/icon.svg",
+				url: "/favicon.svg",
 				type: "image/svg+xml",
 			},
 		],
-		apple: "/apple-icon.png",
+		apple: "/apple-touch-icon.png",
 	},
 };
 
@@ -36,6 +36,11 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang='en'>
+			<head>
+				<meta
+					name='viewport'
+					content='initial-scale=1, viewport-fit=cover, width=device-width'></meta>
+			</head>
 			<body className={`font-sans antialiased`}>{children}</body>
 		</html>
 	);

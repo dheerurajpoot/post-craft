@@ -205,40 +205,36 @@ export function Editor({
 					onClick={addText}
 					size='sm'
 					variant='outline'
-					className='flex-1 bg-transparent border-dashed'>
+					className='flex-4 bg-transparent border-dashed'>
 					<Plus className='w-4 h-4 mr-2' />
 					Add Text
 				</Button>
-				<div className='relative'>
+				<div className='flex gap-2 bg-white rounded-sm'>
 					<Button
-						variant='ghost'
-						size='sm'
-						onClick={() => setShowActionsMenu((s) => !s)}
-						className='h-9 w-9 p-0'>
-						<MoreVertical className='w-4 h-4' />
+						className='w-full flex-2 text-left px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground flex items-center gap-2'
+						onClick={() => {
+							setShowActionsMenu(false);
+							downloadImage();
+						}}>
+						<Download className='w-4 h-4' />
 					</Button>
-					{showActionsMenu && (
-						<div className='absolute right-0 bottom-10 mt-2 w-44 rounded-md border border-border bg-card shadow-lg z-50'>
-							<button
-								className='w-full text-left px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground flex items-center gap-2'
-								onClick={() => {
-									setShowActionsMenu(false);
-									downloadImage();
-								}}>
-								<Download className='w-4 h-4' />
-								Download
-							</button>
-							<button
-								className='w-full text-left px-3 py-2 text-sm hover:bg-destructive/10 text-destructive flex items-center gap-2'
-								onClick={() => {
-									setShowActionsMenu(false);
-									clearCanvas();
-								}}>
-								<Trash2 className='w-4 h-4' />
-								Clear All
-							</button>
-						</div>
-					)}
+					<Button
+						variant='secondary'
+						className='w-full flex-1 text-left px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground flex items-center gap-2'
+						onClick={() => {
+							setShowActionsMenu(false);
+							clearCanvas();
+						}}>
+						<Trash2 className='w-4 h-4' />
+					</Button>
+					{/* <button
+						className='w-full text-left px-3 py-2 text-sm hover:bg-destructive/10 text-destructive flex items-center gap-2'
+						onClick={() => {
+							setShowActionsMenu(false);
+							clearCanvas();
+						}}>
+						<Trash2 className='w-4 h-4' />
+					</button> */}
 				</div>
 			</div>
 

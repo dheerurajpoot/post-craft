@@ -10,6 +10,7 @@ import { Sidebar } from "@/components/sidebar";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { CanvasElement, AspectRatio } from "@/types/index";
+import Image from "next/image";
 
 export default function Home() {
 	const [activeTab, setActiveTab] = useState<
@@ -124,9 +125,15 @@ export default function Home() {
 					<Menu className='w-5 h-5' />
 				</Button>
 
-				<h1 className='text-lg font-bold bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent'>
+				{/* <h1 className='text-lg font-bold bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent'>
 					PostCraft
-				</h1>
+				</h1> */}
+				<Image
+					src='/postcraft.png'
+					alt='PostCraft logo'
+					width={112}
+					height={112}
+				/>
 
 				<div className='w-10' />
 			</header>
