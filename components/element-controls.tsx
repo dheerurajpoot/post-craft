@@ -28,6 +28,12 @@ import {
 	Bold,
 	Italic,
 } from "lucide-react";
+import {
+	ChevronLeft,
+	ChevronRight,
+	ChevronUp,
+	ChevronDown,
+} from "lucide-react";
 import type { CanvasElement } from "@/types";
 import { cn } from "@/lib/utils";
 
@@ -64,7 +70,7 @@ export function ElementControls({
 	onClose,
 }: ElementControlsProps) {
 	return (
-		<div className='fixed bottom-16 left-0 right-0 h-auto max-h-[60vh] bg-background/95 backdrop-blur-md border-t border-border shadow-2xl z-50 flex flex-col rounded-t-xl'>
+		<div className='fixed bottom-20 left-0 right-0 h-auto max-h-[40vh] bg-background/90 backdrop-blur-md border-t border-border shadow-2xl z-50 flex flex-col rounded-t-xl'>
 			{/* Handle bar for bottom sheet feel */}
 			<div
 				className='w-full flex justify-center pt-2 pb-1'
@@ -72,9 +78,9 @@ export function ElementControls({
 				<div className='w-12 h-1.5 bg-muted rounded-full cursor-pointer' />
 			</div>
 
-			<div className='flex items-center justify-between px-4 py-2 border-b bg-transparent'>
+			<div className='flex items-center justify-between px-3 py-1.5 border-b bg-transparent'>
 				<div className='flex items-center gap-2'>
-					<h3 className='font-bold text-sm flex items-center gap-2'>
+					<h3 className='font-bold text-xs flex items-center gap-2'>
 						{element.type === "text" ? (
 							<Type className='w-4 h-4' />
 						) : (
@@ -89,7 +95,7 @@ export function ElementControls({
 						size='icon-sm'
 						onClick={onClone}
 						title='Duplicate'
-						className='h-8 w-8 rounded-full hover:bg-muted'>
+						className='h-7 w-7 rounded-full hover:bg-muted'>
 						<Copy className='w-4 h-4' />
 					</Button>
 					<Button
@@ -97,20 +103,20 @@ export function ElementControls({
 						size='icon-sm'
 						onClick={onDelete}
 						title='Delete'
-						className='h-8 w-8 rounded-full text-destructive hover:text-destructive hover:bg-destructive/10'>
+						className='h-7 w-7 rounded-full text-destructive hover:text-destructive hover:bg-destructive/10'>
 						<Trash2 className='w-4 h-4' />
 					</Button>
 					<Button
 						variant='ghost'
 						size='icon-sm'
 						onClick={onClose}
-						className='h-8 w-8 rounded-full hover:bg-muted'>
+						className='h-7 w-7 rounded-full hover:bg-muted'>
 						<X className='w-4 h-4' />
 					</Button>
 				</div>
 			</div>
 
-			<div className='overflow-y-auto p-4 space-y-6 pb-8'>
+			<div className='overflow-y-auto p-3 space-y-4 pb-6'>
 				{/* Text Specific Controls */}
 				{element.type === "text" && (
 					<div className='space-y-4'>
@@ -120,12 +126,12 @@ export function ElementControls({
 								onChange={(e) =>
 									onUpdate({ content: e.target.value })
 								}
-								className='text-lg font-medium border-0 border-b rounded-none px-0 focus-visible:ring-0 focus-visible:border-primary bg-transparent'
+								className='text-base font-medium border-0 border-b rounded-none px-0 focus-visible:ring-0 focus-visible:border-primary bg-transparent'
 								placeholder='Enter text...'
 							/>
 						</div>
 
-						<div className='grid grid-cols-2 gap-4'>
+						<div className='grid grid-cols-2 gap-3'>
 							<div className='space-y-1.5'>
 								<Label className='text-xs text-muted-foreground'>
 									Font
@@ -135,7 +141,7 @@ export function ElementControls({
 									onValueChange={(value) =>
 										onUpdate({ fontFamily: value })
 									}>
-									<SelectTrigger className='h-9 text-sm'>
+									<SelectTrigger className='h-8 text-xs'>
 										<SelectValue />
 									</SelectTrigger>
 									<SelectContent>
@@ -146,7 +152,7 @@ export function ElementControls({
 												style={{
 													fontFamily: font.value,
 												}}
-												className='text-sm'>
+												className='text-xs'>
 												{font.label}
 											</SelectItem>
 										))}
@@ -169,7 +175,7 @@ export function ElementControls({
 										}
 										className='flex-1'
 									/>
-									<span className='text-xs w-8 text-right font-mono'>
+									<span className='text-xs w-7 text-right font-mono'>
 										{element.fontSize}
 									</span>
 								</div>
@@ -199,7 +205,7 @@ export function ElementControls({
 										onChange={(e) =>
 											onUpdate({ color: e.target.value })
 										}
-										className='flex-1 h-8 text-xs font-mono uppercase'
+										className='flex-1 h-7 text-xs font-mono uppercase'
 									/>
 								</div>
 							</div>
@@ -225,7 +231,7 @@ export function ElementControls({
 														: "bold",
 											})
 										}
-										className='flex-1 h-7 w-auto'>
+										className='flex-1 h-6 w-auto'>
 										<Bold className='w-3.5 h-3.5' />
 									</Button>
 									<Button
@@ -244,7 +250,7 @@ export function ElementControls({
 														: "italic",
 											})
 										}
-										className='flex-1 h-7 w-auto'>
+										className='flex-1 h-6 w-auto'>
 										<Italic className='w-3.5 h-3.5' />
 									</Button>
 								</div>
@@ -253,12 +259,12 @@ export function ElementControls({
 					</div>
 				)}
 
-				<div className='space-y-4 pt-2 border-t'>
+				<div className='space-y-3 pt-2 border-t'>
 					<Label className='text-xs text-muted-foreground uppercase tracking-wider'>
 						Layout & Position
 					</Label>
 
-					<div className='grid grid-cols-2 gap-4'>
+					<div className='grid grid-cols-2 gap-3'>
 						{element.type === "text" && (
 							<div className='bg-muted/30 p-2 rounded-lg flex justify-between items-center'>
 								<span className='text-xs font-medium mr-2'>
@@ -267,14 +273,14 @@ export function ElementControls({
 								<div className='flex gap-1'>
 									<Button
 										variant={
-											element.textAlign === "left"
+											element.textAlign === "right"
 												? "secondary"
 												: "ghost"
 										}
 										size='icon-sm'
-										className='h-7 w-7'
+										className='h-6 w-6'
 										onClick={() =>
-											onUpdate({ textAlign: "left" })
+											onUpdate({ textAlign: "right" })
 										}>
 										<AlignLeft className='w-3.5 h-3.5' />
 									</Button>
@@ -285,7 +291,7 @@ export function ElementControls({
 												: "ghost"
 										}
 										size='icon-sm'
-										className='h-7 w-7'
+										className='h-6 w-6'
 										onClick={() =>
 											onUpdate({ textAlign: "center" })
 										}>
@@ -293,14 +299,14 @@ export function ElementControls({
 									</Button>
 									<Button
 										variant={
-											element.textAlign === "right"
+											element.textAlign === "left"
 												? "secondary"
 												: "ghost"
 										}
 										size='icon-sm'
-										className='h-7 w-7'
+										className='h-6 w-6'
 										onClick={() =>
-											onUpdate({ textAlign: "right" })
+											onUpdate({ textAlign: "left" })
 										}>
 										<AlignRight className='w-3.5 h-3.5' />
 									</Button>
@@ -326,6 +332,50 @@ export function ElementControls({
 							</Button>
 						</div>
 
+						<div className='bg-muted/30 p-2 rounded-lg flex justify-between items-center'>
+							<span className='text-xs font-medium mr-2'>
+								Move
+							</span>
+							<div className='flex gap-1'>
+								<Button
+									variant='ghost'
+									size='icon-sm'
+									className='h-6 w-6'
+									onClick={() =>
+										onUpdate({ x: (element.x || 0) - 10 })
+									}>
+									<ChevronLeft className='w-3.5 h-3.5' />
+								</Button>
+								<Button
+									variant='ghost'
+									size='icon-sm'
+									className='h-6 w-6'
+									onClick={() =>
+										onUpdate({ x: (element.x || 0) + 10 })
+									}>
+									<ChevronRight className='w-3.5 h-3.5' />
+								</Button>
+								<Button
+									variant='ghost'
+									size='icon-sm'
+									className='h-6 w-6'
+									onClick={() =>
+										onUpdate({ y: (element.y || 0) - 10 })
+									}>
+									<ChevronUp className='w-3.5 h-3.5' />
+								</Button>
+								<Button
+									variant='ghost'
+									size='icon-sm'
+									className='h-6 w-6'
+									onClick={() =>
+										onUpdate({ y: (element.y || 0) + 10 })
+									}>
+									<ChevronDown className='w-3.5 h-3.5' />
+								</Button>
+							</div>
+						</div>
+
 						<div
 							className={cn(
 								"bg-muted/30 p-2 rounded-lg flex justify-between items-center",
@@ -338,7 +388,7 @@ export function ElementControls({
 								<Button
 									variant='ghost'
 									size='icon-sm'
-									className='h-7 w-7'
+									className='h-6 w-6'
 									onClick={() => onMoveLayer("down")}
 									title='Move Backward'>
 									<ArrowDown className='w-3.5 h-3.5' />
@@ -346,7 +396,7 @@ export function ElementControls({
 								<Button
 									variant='ghost'
 									size='icon-sm'
-									className='h-7 w-7'
+									className='h-6 w-6'
 									onClick={() => onMoveLayer("up")}
 									title='Move Forward'>
 									<ArrowUp className='w-3.5 h-3.5' />
@@ -354,7 +404,7 @@ export function ElementControls({
 								<Button
 									variant='ghost'
 									size='icon-sm'
-									className='h-7 w-7'
+									className='h-6 w-6'
 									onClick={() => onMoveLayer("bottom")}
 									title='Send to Back'>
 									<SendToBack className='w-3.5 h-3.5' />
@@ -362,7 +412,7 @@ export function ElementControls({
 								<Button
 									variant='ghost'
 									size='icon-sm'
-									className='h-7 w-7'
+									className='h-6 w-6'
 									onClick={() => onMoveLayer("top")}
 									title='Bring to Front'>
 									<BringToFront className='w-3.5 h-3.5' />

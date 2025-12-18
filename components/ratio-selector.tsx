@@ -22,8 +22,8 @@ const ratios: {
 
 export function RatioSelector({ aspectRatio, onChange }: RatioSelectorProps) {
 	return (
-		<div className='w-full overflow-x-auto no-scrollbar py-2'>
-			<div className='flex items-center space-x-3 px-1 min-w-max'>
+		<div className='w-full overflow-x-auto no-scrollbar py-1.5'>
+			<div className='flex items-center justify-center space-x-3 px-1 w-full'>
 				{ratios.map((ratio) => {
 					const Icon = ratio.icon;
 					const isSelected = aspectRatio === ratio.value;
@@ -32,14 +32,14 @@ export function RatioSelector({ aspectRatio, onChange }: RatioSelectorProps) {
 							key={ratio.value}
 							onClick={() => onChange(ratio.value)}
 							className={cn(
-								"flex flex-col items-center justify-center gap-1.5 rounded-xl px-4 py-2 min-w-[70px] transition-all duration-200 border",
+								"flex flex-col items-center justify-center gap-1.5 rounded-sm px-3 py-1.5 min-w-[64px] transition-all duration-200 border",
 								isSelected
 									? "bg-primary text-primary-foreground border-primary shadow-md scale-105 font-medium"
 									: "bg-card text-muted-foreground border-border hover:bg-accent hover:text-accent-foreground"
 							)}>
 							<Icon
 								className={cn(
-									"w-5 h-5",
+									"w-4.5 h-4.5",
 									isSelected ? "stroke-[2.5px]" : "stroke-2"
 								)}
 							/>

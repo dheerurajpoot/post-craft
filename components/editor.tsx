@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Download, Trash2, Plus } from "lucide-react";
+import { Download, Trash2, Plus, MoreVertical } from "lucide-react";
 import { Canvas } from "@/components/canvas";
 import { ElementControls } from "@/components/element-controls";
 import { RatioSelector } from "@/components/ratio-selector";
@@ -29,6 +29,7 @@ export function Editor({
 	setSelectedElement,
 }: EditorProps) {
 	const [showControls, setShowControls] = useState(false);
+	const [showActionsMenu, setShowActionsMenu] = useState(false);
 
 	const addText = () => {
 		// Calculate center based on aspect ratio
@@ -173,32 +174,7 @@ export function Editor({
 	};
 
 	return (
-		<div className='flex flex-col gap-4 p-4 relative h-full'>
-			<div className='flex justify-between items-center'>
-				<RatioSelector
-					aspectRatio={aspectRatio}
-					onChange={setAspectRatio}
-				/>
-			</div>
-
-			<div className='flex'>
-				<Button
-					onClick={addText}
-					size='sm'
-					variant='outline'
-					className='flex-1 bg-transparent border-dashed'>
-					<Plus className='w-4 h-4 mr-2' />
-					Add Text
-				</Button>
-				<Button
-					variant='ghost'
-					size='sm'
-					onClick={clearCanvas}
-					className='text-destructive hover:text-destructive hover:bg-destructive/10'>
-					<Trash2 className='w-4 h-4' /> Clear All
-				</Button>
-			</div>
-
+		<div className='flex flex-col gap-3 p-4 relative h-full'>
 			<div className='flex-1 min-h-0 border rounded-lg overflow-hidden bg-gray-50 dark:bg-gray-900 relative'>
 				<Canvas
 					elements={elements}
@@ -215,6 +191,55 @@ export function Editor({
 					}}
 					onUpdateElements={setElements}
 				/>
+			</div>
+
+			{/* Bottom Action Bar */}
+			<div className='flex items-center justify-center '>
+				<RatioSelector
+					aspectRatio={aspectRatio}
+					onChange={setAspectRatio}
+				/>
+			</div>
+			<div className='flex items-center gap-2'>
+				<Button
+					onClick={addText}
+					size='sm'
+					variant='outline'
+					className='flex-1 bg-transparent border-dashed'>
+					<Plus className='w-4 h-4 mr-2' />
+					Add Text
+				</Button>
+				<div className='relative'>
+					<Button
+						variant='ghost'
+						size='sm'
+						onClick={() => setShowActionsMenu((s) => !s)}
+						className='h-9 w-9 p-0'>
+						<MoreVertical className='w-4 h-4' />
+					</Button>
+					{showActionsMenu && (
+						<div className='absolute right-0 bottom-10 mt-2 w-44 rounded-md border border-border bg-card shadow-lg z-50'>
+							<button
+								className='w-full text-left px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground flex items-center gap-2'
+								onClick={() => {
+									setShowActionsMenu(false);
+									downloadImage();
+								}}>
+								<Download className='w-4 h-4' />
+								Download
+							</button>
+							<button
+								className='w-full text-left px-3 py-2 text-sm hover:bg-destructive/10 text-destructive flex items-center gap-2'
+								onClick={() => {
+									setShowActionsMenu(false);
+									clearCanvas();
+								}}>
+								<Trash2 className='w-4 h-4' />
+								Clear All
+							</button>
+						</div>
+					)}
+				</div>
 			</div>
 
 			{showControls &&
@@ -243,11 +268,6 @@ export function Editor({
 						}}
 					/>
 				)}
-
-			<Button onClick={downloadImage} className='w-full' size='lg'>
-				<Download className='w-5 h-5 mr-2' />
-				Download Post
-			</Button>
 		</div>
 	);
 }
