@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Download, Trash2, Plus, MoreVertical } from "lucide-react";
+import { Download, Trash2, Plus } from "lucide-react";
 import { Canvas } from "@/components/canvas";
 import { ElementControls } from "@/components/element-controls";
 import { RatioSelector } from "@/components/ratio-selector";
@@ -15,6 +15,8 @@ interface EditorProps {
 	setAspectRatio: (ratio: AspectRatio) => void;
 	backgroundColor: string;
 	setBackgroundColor: (color: string) => void;
+	overlayColor?: string;
+	overlayOpacity?: number;
 	selectedElement: string | null;
 	setSelectedElement: (id: string | null) => void;
 }
@@ -25,11 +27,12 @@ export function Editor({
 	aspectRatio,
 	setAspectRatio,
 	backgroundColor,
+	overlayColor,
+	overlayOpacity,
 	selectedElement,
 	setSelectedElement,
 }: EditorProps) {
 	const [showControls, setShowControls] = useState(false);
-	const [showActionsMenu, setShowActionsMenu] = useState(false);
 
 	const addText = () => {
 		// Calculate center based on aspect ratio
@@ -157,6 +160,8 @@ export function Editor({
 				elements,
 				aspectRatio,
 				backgroundColor,
+				overlayColor,
+				overlayOpacity,
 				timestamp: Date.now(),
 			});
 			localStorage.setItem(
@@ -180,6 +185,8 @@ export function Editor({
 					elements={elements}
 					aspectRatio={aspectRatio}
 					backgroundColor={backgroundColor}
+					overlayColor={overlayColor}
+					overlayOpacity={overlayOpacity}
 					selectedElement={selectedElement}
 					onSelectElement={(id) => {
 						setSelectedElement(id);
@@ -194,13 +201,15 @@ export function Editor({
 			</div>
 
 			{/* Bottom Action Bar */}
-			<div className='flex items-center justify-center '>
-				<RatioSelector
-					aspectRatio={aspectRatio}
-					onChange={setAspectRatio}
-				/>
+			<div className='flex items-center justify-between gap-2 mt-2'>
+				<div className='flex-1 min-w-0'>
+					<RatioSelector
+						aspectRatio={aspectRatio}
+						onChange={setAspectRatio}
+					/>
+				</div>
 			</div>
-			<div className='flex items-center gap-2'>
+			<div className='flex items-center gap-2 mb-4'>
 				<Button
 					onClick={addText}
 					size='sm'
@@ -213,7 +222,6 @@ export function Editor({
 					<Button
 						className='w-full flex-2 text-left px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground flex items-center gap-2'
 						onClick={() => {
-							setShowActionsMenu(false);
 							downloadImage();
 						}}>
 						<Download className='w-4 h-4' />
@@ -222,19 +230,10 @@ export function Editor({
 						variant='secondary'
 						className='w-full flex-1 text-left px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground flex items-center gap-2'
 						onClick={() => {
-							setShowActionsMenu(false);
 							clearCanvas();
 						}}>
 						<Trash2 className='w-4 h-4' />
 					</Button>
-					{/* <button
-						className='w-full text-left px-3 py-2 text-sm hover:bg-destructive/10 text-destructive flex items-center gap-2'
-						onClick={() => {
-							setShowActionsMenu(false);
-							clearCanvas();
-						}}>
-						<Trash2 className='w-4 h-4' />
-					</button> */}
 				</div>
 			</div>
 

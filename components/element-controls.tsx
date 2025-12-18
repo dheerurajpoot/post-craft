@@ -70,7 +70,7 @@ export function ElementControls({
 	onClose,
 }: ElementControlsProps) {
 	return (
-		<div className='fixed bottom-20 left-0 right-0 h-auto max-h-[40vh] bg-background/90 backdrop-blur-md border-t border-border shadow-2xl z-50 flex flex-col rounded-t-xl'>
+		<div className='fixed bottom-20 left-0 right-0 h-auto max-h-[35vh] bg-background/90 backdrop-blur-md border-t border-border shadow-2xl z-50 flex flex-col rounded-t-xl'>
 			{/* Handle bar for bottom sheet feel */}
 			<div
 				className='w-full flex justify-center pt-2 pb-1'
@@ -116,7 +116,7 @@ export function ElementControls({
 				</div>
 			</div>
 
-			<div className='overflow-y-auto p-3 space-y-4 pb-6'>
+			<div className='overflow-y-auto p-2 space-y-3 pb-4'>
 				{/* Text Specific Controls */}
 				{element.type === "text" && (
 					<div className='space-y-4'>
@@ -131,7 +131,7 @@ export function ElementControls({
 							/>
 						</div>
 
-						<div className='grid grid-cols-2 gap-3'>
+						<div className='grid grid-cols-3 gap-3'>
 							<div className='space-y-1.5'>
 								<Label className='text-xs text-muted-foreground'>
 									Font
@@ -158,6 +158,52 @@ export function ElementControls({
 										))}
 									</SelectContent>
 								</Select>
+							</div>
+
+							<div className='space-y-1.5'>
+								<Label className='text-xs text-muted-foreground'>
+									Style
+								</Label>
+								<div className='flex gap-1 bg-muted/50 p-1 rounded-lg'>
+									<Button
+										variant={
+											element.fontWeight === "bold"
+												? "default"
+												: "ghost"
+										}
+										size='icon-sm'
+										onClick={() =>
+											onUpdate({
+												fontWeight:
+													element.fontWeight ===
+													"bold"
+														? "normal"
+														: "bold",
+											})
+										}
+										className='flex-1 h-6 w-auto'>
+										<Bold className='w-3.5 h-3.5' />
+									</Button>
+									<Button
+										variant={
+											element.fontStyle === "italic"
+												? "default"
+												: "ghost"
+										}
+										size='icon-sm'
+										onClick={() =>
+											onUpdate({
+												fontStyle:
+													element.fontStyle ===
+													"italic"
+														? "normal"
+														: "italic",
+											})
+										}
+										className='flex-1 h-6 w-auto'>
+										<Italic className='w-3.5 h-3.5' />
+									</Button>
+								</div>
 							</div>
 
 							<div className='space-y-1.5'>
@@ -212,47 +258,100 @@ export function ElementControls({
 
 							<div className='flex-1 space-y-1.5'>
 								<Label className='text-xs text-muted-foreground'>
-									Style
+									Text Align
 								</Label>
-								<div className='flex gap-1 bg-muted/50 p-1 rounded-lg'>
+								<div className='flex gap-1'>
 									<Button
-										variant={
-											element.fontWeight === "bold"
-												? "default"
-												: "ghost"
-										}
+										variant='ghost'
 										size='icon-sm'
+										className='h-6 w-6'
 										onClick={() =>
 											onUpdate({
-												fontWeight:
-													element.fontWeight ===
-													"bold"
-														? "normal"
-														: "bold",
+												x: (element.x || 0) - 10,
 											})
-										}
-										className='flex-1 h-6 w-auto'>
-										<Bold className='w-3.5 h-3.5' />
+										}>
+										<ChevronLeft className='w-3.5 h-3.5' />
 									</Button>
 									<Button
-										variant={
-											element.fontStyle === "italic"
-												? "default"
-												: "ghost"
-										}
+										variant='ghost'
 										size='icon-sm'
+										className='h-6 w-6'
 										onClick={() =>
 											onUpdate({
-												fontStyle:
-													element.fontStyle ===
-													"italic"
-														? "normal"
-														: "italic",
+												x: (element.x || 0) + 10,
 											})
-										}
-										className='flex-1 h-6 w-auto'>
-										<Italic className='w-3.5 h-3.5' />
+										}>
+										<ChevronRight className='w-3.5 h-3.5' />
 									</Button>
+									<Button
+										variant='ghost'
+										size='icon-sm'
+										className='h-6 w-6'
+										onClick={() =>
+											onUpdate({
+												y: (element.y || 0) - 10,
+											})
+										}>
+										<ChevronUp className='w-3.5 h-3.5' />
+									</Button>
+									<Button
+										variant='ghost'
+										size='icon-sm'
+										className='h-6 w-6'
+										onClick={() =>
+											onUpdate({
+												y: (element.y || 0) + 10,
+											})
+										}>
+										<ChevronDown className='w-3.5 h-3.5' />
+									</Button>
+								</div>
+							</div>
+						</div>
+					</div>
+				)}
+
+				{element.type === "image" && (
+					<div className='space-y-3'>
+						<div className='grid grid-cols-2 gap-2'>
+							<div className='space-y-1.5'>
+								<Label className='text-xs text-muted-foreground'>
+									Width
+								</Label>
+								<div className='flex items-center gap-2'>
+									<Slider
+										value={[element.width || 200]}
+										min={50}
+										max={2000}
+										step={10}
+										onValueChange={(vals) =>
+											onUpdate({ width: vals[0] })
+										}
+										className='flex-1'
+									/>
+									<span className='text-xs w-10 text-right font-mono'>
+										{element.width || 200}
+									</span>
+								</div>
+							</div>
+							<div className='space-y-1.5'>
+								<Label className='text-xs text-muted-foreground'>
+									Height
+								</Label>
+								<div className='flex items-center gap-2'>
+									<Slider
+										value={[element.height || 200]}
+										min={50}
+										max={2000}
+										step={10}
+										onValueChange={(vals) =>
+											onUpdate({ height: vals[0] })
+										}
+										className='flex-1'
+									/>
+									<span className='text-xs w-10 text-right font-mono'>
+										{element.height || 200}
+									</span>
 								</div>
 							</div>
 						</div>
@@ -267,20 +366,17 @@ export function ElementControls({
 					<div className='grid grid-cols-2 gap-3'>
 						{element.type === "text" && (
 							<div className='bg-muted/30 p-2 rounded-lg flex justify-between items-center'>
-								<span className='text-xs font-medium mr-2'>
-									Text Align
-								</span>
 								<div className='flex gap-1'>
 									<Button
 										variant={
-											element.textAlign === "right"
+											element.textAlign === "left"
 												? "secondary"
 												: "ghost"
 										}
 										size='icon-sm'
 										className='h-6 w-6'
 										onClick={() =>
-											onUpdate({ textAlign: "right" })
+											onUpdate({ textAlign: "left" })
 										}>
 										<AlignLeft className='w-3.5 h-3.5' />
 									</Button>
@@ -299,126 +395,28 @@ export function ElementControls({
 									</Button>
 									<Button
 										variant={
-											element.textAlign === "left"
+											element.textAlign === "right"
 												? "secondary"
 												: "ghost"
 										}
 										size='icon-sm'
 										className='h-6 w-6'
 										onClick={() =>
-											onUpdate({ textAlign: "left" })
+											onUpdate({ textAlign: "right" })
 										}>
 										<AlignRight className='w-3.5 h-3.5' />
+									</Button>
+									<Button
+										variant='ghost'
+										size='sm'
+										className='h-7 px-2 text-xs gap-1'
+										onClick={onCenter}>
+										<Move className='w-3 h-3' />
+										Center
 									</Button>
 								</div>
 							</div>
 						)}
-
-						<div
-							className={cn(
-								"bg-muted/30 p-2 rounded-lg flex justify-between items-center",
-								element.type !== "text" && "col-span-1"
-							)}>
-							<span className='text-xs font-medium mr-2'>
-								Position
-							</span>
-							<Button
-								variant='ghost'
-								size='sm'
-								className='h-7 px-2 text-xs gap-1'
-								onClick={onCenter}>
-								<Move className='w-3 h-3' />
-								Center
-							</Button>
-						</div>
-
-						<div className='bg-muted/30 p-2 rounded-lg flex justify-between items-center'>
-							<span className='text-xs font-medium mr-2'>
-								Move
-							</span>
-							<div className='flex gap-1'>
-								<Button
-									variant='ghost'
-									size='icon-sm'
-									className='h-6 w-6'
-									onClick={() =>
-										onUpdate({ x: (element.x || 0) - 10 })
-									}>
-									<ChevronLeft className='w-3.5 h-3.5' />
-								</Button>
-								<Button
-									variant='ghost'
-									size='icon-sm'
-									className='h-6 w-6'
-									onClick={() =>
-										onUpdate({ x: (element.x || 0) + 10 })
-									}>
-									<ChevronRight className='w-3.5 h-3.5' />
-								</Button>
-								<Button
-									variant='ghost'
-									size='icon-sm'
-									className='h-6 w-6'
-									onClick={() =>
-										onUpdate({ y: (element.y || 0) - 10 })
-									}>
-									<ChevronUp className='w-3.5 h-3.5' />
-								</Button>
-								<Button
-									variant='ghost'
-									size='icon-sm'
-									className='h-6 w-6'
-									onClick={() =>
-										onUpdate({ y: (element.y || 0) + 10 })
-									}>
-									<ChevronDown className='w-3.5 h-3.5' />
-								</Button>
-							</div>
-						</div>
-
-						<div
-							className={cn(
-								"bg-muted/30 p-2 rounded-lg flex justify-between items-center",
-								"col-span-2"
-							)}>
-							<span className='text-xs font-medium mr-2'>
-								Layer Order
-							</span>
-							<div className='flex gap-1'>
-								<Button
-									variant='ghost'
-									size='icon-sm'
-									className='h-6 w-6'
-									onClick={() => onMoveLayer("down")}
-									title='Move Backward'>
-									<ArrowDown className='w-3.5 h-3.5' />
-								</Button>
-								<Button
-									variant='ghost'
-									size='icon-sm'
-									className='h-6 w-6'
-									onClick={() => onMoveLayer("up")}
-									title='Move Forward'>
-									<ArrowUp className='w-3.5 h-3.5' />
-								</Button>
-								<Button
-									variant='ghost'
-									size='icon-sm'
-									className='h-6 w-6'
-									onClick={() => onMoveLayer("bottom")}
-									title='Send to Back'>
-									<SendToBack className='w-3.5 h-3.5' />
-								</Button>
-								<Button
-									variant='ghost'
-									size='icon-sm'
-									className='h-6 w-6'
-									onClick={() => onMoveLayer("top")}
-									title='Bring to Front'>
-									<BringToFront className='w-3.5 h-3.5' />
-								</Button>
-							</div>
-						</div>
 					</div>
 				</div>
 			</div>

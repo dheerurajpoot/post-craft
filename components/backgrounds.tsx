@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Loader2, Upload, Palette } from "lucide-react";
 import type { CanvasElement } from "@/types/index";
+import { Slider } from "@/components/ui/slider";
 
 interface PexelsPhoto {
 	id: number;
@@ -21,17 +22,30 @@ interface PexelsPhoto {
 interface BackgroundsProps {
 	onAddBackground: (element: CanvasElement) => void;
 	onSetBackgroundColor: (color: string) => void;
+	overlayColor: string;
+	overlayOpacity: number;
+	onSetOverlayColor: (color: string) => void;
+	onSetOverlayOpacity: (opacity: number) => void;
 }
 
 export function Backgrounds({
 	onAddBackground,
 	onSetBackgroundColor,
+	overlayColor,
+	overlayOpacity,
+	onSetOverlayColor,
+	onSetOverlayOpacity,
 }: BackgroundsProps) {
-	const [query, setQuery] = useState("abstract background");
+	const [query, setQuery] = useState("nature background");
 	const [photos, setPhotos] = useState<PexelsPhoto[]>([]);
 	const [loading, setLoading] = useState(false);
-	const [showColorPicker, setShowColorPicker] = useState(false);
 	const [localBackgroundColor, setLocalBackgroundColor] = useState("#ffffff");
+	const [localOverlayColor, setLocalOverlayColor] = useState(
+		overlayColor || "#000000"
+	);
+	const [localOverlayOpacity, setLocalOverlayOpacity] = useState(
+		overlayOpacity || 0
+	);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	const searchImages = async (searchQuery: string) => {
@@ -170,6 +184,61 @@ export function Backgrounds({
 							title={color}
 						/>
 					))}
+				</div>
+			</div>
+
+			{/* Overlay Section */}
+			<div className='space-y-3'>
+				<div className='flex items-center justify-between'>
+					<h3 className='text-sm font-semibold text-foreground/80'>
+						Overlay
+					</h3>
+					<div className='relative'>
+						<input
+							type='color'
+							value={localOverlayColor}
+							onChange={(e) => {
+								const c = e.target.value;
+								setLocalOverlayColor(c);
+								onSetOverlayColor(c);
+							}}
+							className='absolute inset-0 opacity-0 cursor-pointer w-full h-full'
+						/>
+						<Button
+							variant='ghost'
+							size='sm'
+							className='h-6 text-xs px-2 gap-1 bg-muted/50'>
+							<Palette className='w-3 h-3' />
+							Color
+						</Button>
+					</div>
+				</div>
+				<div className='space-y-2'>
+					<div className='flex items-center justify-between gap-2'>
+						<div className='flex items-center gap-2'>
+							<span
+								className='w-4 h-4 rounded-full border border-border'
+								style={{ backgroundColor: localOverlayColor }}
+							/>
+							<span className='text-xs text-muted-foreground'>
+								Opacity
+							</span>
+						</div>
+						<span className='text-xs font-mono'>
+							{Math.round((localOverlayOpacity || 0) * 100)}%
+						</span>
+					</div>
+					<Slider
+						value={[Math.round((localOverlayOpacity || 0) * 100)]}
+						min={0}
+						max={100}
+						step={1}
+						onValueChange={(vals) => {
+							const o = (vals[0] || 0) / 100;
+							setLocalOverlayOpacity(o);
+							onSetOverlayOpacity(o);
+						}}
+					/>
 				</div>
 			</div>
 

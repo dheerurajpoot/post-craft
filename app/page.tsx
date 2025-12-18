@@ -22,6 +22,8 @@ export default function Home() {
 	const [elements, setElements] = useState<CanvasElement[]>([]);
 	const [aspectRatio, setAspectRatio] = useState<AspectRatio>("1:1");
 	const [backgroundColor, setBackgroundColor] = useState("#ffffff");
+	const [overlayColor, setOverlayColor] = useState<string>("#000000");
+	const [overlayOpacity, setOverlayOpacity] = useState<number>(0);
 	const [selectedElement, setSelectedElement] = useState<string | null>(null);
 
 	// Load saved design from localStorage on mount
@@ -45,10 +47,12 @@ export default function Home() {
 			elements,
 			aspectRatio,
 			backgroundColor,
+			overlayColor,
+			overlayOpacity,
 			timestamp: Date.now(),
 		};
 		localStorage.setItem("currentDesign", JSON.stringify(design));
-	}, [elements, aspectRatio, backgroundColor]);
+	}, [elements, aspectRatio, backgroundColor, overlayColor, overlayOpacity]);
 
 	const handleApplyTemplate = (template: any) => {
 		const imageElement = template.backgroundImage
@@ -112,6 +116,9 @@ export default function Home() {
 		setElements(design.elements || []);
 		setAspectRatio(design.aspectRatio || "1:1");
 		setBackgroundColor(design.backgroundColor || "#ffffff");
+		if (design.overlayColor) setOverlayColor(design.overlayColor);
+		if (typeof design.overlayOpacity === "number")
+			setOverlayOpacity(design.overlayOpacity);
 		setActiveTab("editor");
 	};
 
@@ -147,6 +154,8 @@ export default function Home() {
 						setAspectRatio={setAspectRatio}
 						backgroundColor={backgroundColor}
 						setBackgroundColor={setBackgroundColor}
+						overlayColor={overlayColor}
+						overlayOpacity={overlayOpacity}
 						selectedElement={selectedElement}
 						setSelectedElement={setSelectedElement}
 					/>
@@ -158,6 +167,10 @@ export default function Home() {
 					<Backgrounds
 						onAddBackground={handleAddBackground}
 						onSetBackgroundColor={handleSetBackgroundColor}
+						overlayColor={overlayColor}
+						overlayOpacity={overlayOpacity}
+						onSetOverlayColor={setOverlayColor}
+						onSetOverlayOpacity={setOverlayOpacity}
 					/>
 				)}
 				{activeTab === "designs" && (

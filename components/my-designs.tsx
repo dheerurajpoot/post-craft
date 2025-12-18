@@ -211,7 +211,7 @@ export function MyDesigns({ onLoadDesign }: MyDesignsProps) {
 									</Button>
 
 									{/* Info Overlay */}
-									<div className='absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/60 to-transparent'>
+									<div className='absolute bottom-0 left-0 right-0 p-3 bg-linear-to-t from-black/60 to-transparent'>
 										<p className='text-[10px] text-white/90 font-medium'>
 											{new Date(
 												design.timestamp

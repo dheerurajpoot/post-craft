@@ -9,6 +9,8 @@ interface CanvasProps {
 	elements: CanvasElement[];
 	aspectRatio: AspectRatio;
 	backgroundColor: string;
+	overlayColor?: string;
+	overlayOpacity?: number;
 	selectedElement: string | null;
 	onSelectElement: (id: string | null) => void;
 	onUpdateElements: (elements: CanvasElement[]) => void;
@@ -25,6 +27,8 @@ export function Canvas({
 	elements,
 	aspectRatio,
 	backgroundColor,
+	overlayColor,
+	overlayOpacity = 0,
 	selectedElement,
 	onSelectElement,
 	onUpdateElements,
@@ -106,8 +110,46 @@ export function Canvas({
 		ctx.fillStyle = backgroundColor;
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-		// Render elements
-		elements.forEach((element) => {
+		// Overlay
+		if (overlayColor && overlayOpacity > 0) {
+			const prevAlpha = ctx.globalAlpha;
+			ctx.globalAlpha = Math.max(0, Math.min(overlayOpacity, 1));
+			ctx.fillStyle = overlayColor;
+			ctx.fillRect(0, 0, canvas.width, canvas.height);
+			ctx.globalAlpha = prevAlpha;
+		}
+
+		// Render background image elements (id starts with bg-)
+		const bgElements = elements.filter(
+			(e) => e.type === "image" && (e.id || "").startsWith("bg-")
+		);
+		bgElements.forEach((element) => {
+			const img = imageCache[element.src!];
+			if (img && img.complete) {
+				ctx.drawImage(
+					img,
+					element.x,
+					element.y,
+					element.width || 200,
+					element.height || 200
+				);
+			}
+		});
+
+		// Overlay above background images
+		if (overlayColor && overlayOpacity > 0) {
+			const prevAlpha = ctx.globalAlpha;
+			ctx.globalAlpha = Math.max(0, Math.min(overlayOpacity, 1));
+			ctx.fillStyle = overlayColor;
+			ctx.fillRect(0, 0, canvas.width, canvas.height);
+			ctx.globalAlpha = prevAlpha;
+		}
+
+		// Render remaining elements (text + non-background images)
+		const fgElements = elements.filter(
+			(e) => !(e.type === "image" && (e.id || "").startsWith("bg-"))
+		);
+		fgElements.forEach((element) => {
 			if (element.type === "text") {
 				ctx.fillStyle = element.color || "#000000";
 				ctx.font = `${element.fontStyle || ""} ${
