@@ -17,6 +17,8 @@ interface EditorProps {
 	setBackgroundColor: (color: string) => void;
 	overlayColor?: string;
 	overlayOpacity?: number;
+	setOverlayColor?: (color: string) => void;
+	setOverlayOpacity?: (opacity: number) => void;
 	selectedElement: string | null;
 	setSelectedElement: (id: string | null) => void;
 }
@@ -29,6 +31,8 @@ export function Editor({
 	backgroundColor,
 	overlayColor,
 	overlayOpacity,
+	setOverlayColor,
+	setOverlayOpacity,
 	selectedElement,
 	setSelectedElement,
 }: EditorProps) {
@@ -244,6 +248,10 @@ export function Editor({
 						element={
 							elements.find((e) => e.id === selectedElement)!
 						}
+						overlayColor={overlayColor}
+						overlayOpacity={overlayOpacity}
+						onSetOverlayColor={setOverlayColor}
+						onSetOverlayOpacity={setOverlayOpacity}
 						onUpdate={(updates) => {
 							setElements(
 								elements.map((el) =>

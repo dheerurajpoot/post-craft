@@ -45,6 +45,10 @@ interface ElementControlsProps {
 	onMoveLayer: (direction: "up" | "down" | "top" | "bottom") => void;
 	onCenter: () => void;
 	onClose: () => void;
+	overlayColor?: string;
+	overlayOpacity?: number;
+	onSetOverlayColor?: (color: string) => void;
+	onSetOverlayOpacity?: (opacity: number) => void;
 }
 
 const FONT_FAMILIES = [
@@ -68,6 +72,10 @@ export function ElementControls({
 	onMoveLayer,
 	onCenter,
 	onClose,
+	overlayColor,
+	overlayOpacity,
+	onSetOverlayColor,
+	onSetOverlayOpacity,
 }: ElementControlsProps) {
 	return (
 		<div className='fixed bottom-20 left-0 right-0 h-auto max-h-[35vh] bg-background/90 backdrop-blur-md border-t border-border shadow-2xl z-50 flex flex-col rounded-t-xl'>
@@ -324,9 +332,15 @@ export function ElementControls({
 										min={50}
 										max={2000}
 										step={10}
-										onValueChange={(vals) =>
-											onUpdate({ width: vals[0] })
-										}
+										onValueChange={(vals) => {
+											const newW = vals[0];
+											const currW = element.width || 200;
+											const dx = (newW - currW) / 2;
+											onUpdate({
+												width: newW,
+												x: (element.x || 0) - dx,
+											});
+										}}
 										className='flex-1'
 									/>
 									<span className='text-xs w-10 text-right font-mono'>
@@ -344,15 +358,78 @@ export function ElementControls({
 										min={50}
 										max={2000}
 										step={10}
-										onValueChange={(vals) =>
-											onUpdate({ height: vals[0] })
-										}
+										onValueChange={(vals) => {
+											const newH = vals[0];
+											const currH = element.height || 200;
+											const dy = (newH - currH) / 2;
+											onUpdate({
+												height: newH,
+												y: (element.y || 0) - dy,
+											});
+										}}
 										className='flex-1'
 									/>
 									<span className='text-xs w-10 text-right font-mono'>
 										{element.height || 200}
 									</span>
 								</div>
+							</div>
+						</div>
+
+						<div className='space-y-2'>
+							<Label className='text-xs text-muted-foreground'>
+								Overlay
+							</Label>
+							<div className='flex items-center justify-between'>
+								<div className='relative'>
+									<input
+										type='color'
+										value={overlayColor || "#000000"}
+										onChange={(e) =>
+											onSetOverlayColor?.(e.target.value)
+										}
+										className='absolute inset-0 opacity-0 cursor-pointer w-full h-full'
+									/>
+									<Button
+										variant='ghost'
+										size='sm'
+										className='h-6 text-xs px-2 gap-1 bg-muted/50'>
+										<Palette className='w-3 h-3' />
+										Color
+									</Button>
+								</div>
+								<span
+									className='w-4 h-4 rounded-full border border-border'
+									style={{
+										backgroundColor:
+											overlayColor || "#000000",
+									}}
+								/>
+							</div>
+							<div className='flex items-center gap-2'>
+								<span className='text-xs text-muted-foreground'>
+									Opacity
+								</span>
+								<Slider
+									value={[
+										Math.round(
+											((overlayOpacity || 0) as number) *
+												100
+										),
+									]}
+									min={0}
+									max={100}
+									step={1}
+									onValueChange={(vals) =>
+										onSetOverlayOpacity?.(
+											(vals[0] || 0) / 100
+										)
+									}
+									className='flex-1'
+								/>
+								<span className='text-xs font-mono w-8 text-right'>
+									{Math.round((overlayOpacity || 0) * 100)}%
+								</span>
 							</div>
 						</div>
 					</div>

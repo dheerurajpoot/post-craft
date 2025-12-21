@@ -156,6 +156,8 @@ export default function Home() {
 						setBackgroundColor={setBackgroundColor}
 						overlayColor={overlayColor}
 						overlayOpacity={overlayOpacity}
+						setOverlayColor={setOverlayColor}
+						setOverlayOpacity={setOverlayOpacity}
 						selectedElement={selectedElement}
 						setSelectedElement={setSelectedElement}
 					/>
