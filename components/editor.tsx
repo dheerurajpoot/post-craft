@@ -250,7 +250,7 @@ export function Editor({
 	};
 
 	return (
-		<div className='flex flex-col h-[94%] bg-gray-50 dark:bg-gray-950'>
+		<div className='flex flex-col h-[97%] bg-gray-50 dark:bg-gray-950'>
 			{/* Top Bar: Actions */}
 			<div className='h-14 border-b bg-background/95 backdrop-blur px-4 flex items-center justify-between shrink-0 z-10'>
 				<Button
