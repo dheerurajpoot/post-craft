@@ -18,24 +18,13 @@ import {
 	AlignRight,
 	Trash2,
 	Copy,
-	ArrowUp,
-	ArrowDown,
-	Move,
 	Type,
 	Palette,
-	BringToFront,
-	SendToBack,
 	Bold,
 	Italic,
-} from "lucide-react";
-import {
-	ChevronLeft,
-	ChevronRight,
-	ChevronUp,
-	ChevronDown,
+	Move,
 } from "lucide-react";
 import type { CanvasElement } from "@/types";
-import { cn } from "@/lib/utils";
 
 interface ElementControlsProps {
 	element: CanvasElement;
@@ -45,23 +34,17 @@ interface ElementControlsProps {
 	onMoveLayer: (direction: "up" | "down" | "top" | "bottom") => void;
 	onCenter: () => void;
 	onClose: () => void;
-	overlayColor?: string;
-	overlayOpacity?: number;
-	onSetOverlayColor?: (color: string) => void;
-	onSetOverlayOpacity?: (opacity: number) => void;
 }
 
 const FONT_FAMILIES = [
 	{ value: "Inter", label: "Inter" },
 	{ value: "Arial", label: "Arial" },
 	{ value: "Georgia", label: "Georgia" },
-	{ value: "Times New Roman", label: "Times New Roman" },
-	{ value: "Courier New", label: "Courier New" },
+	{ value: "Times New Roman", label: "Times" },
+	{ value: "Courier New", label: "Courier" },
 	{ value: "Verdana", label: "Verdana" },
-	{ value: "Comic Sans MS", label: "Comic Sans" },
+	{ value: "Comic Sans MS", label: "Comic" },
 	{ value: "Impact", label: "Impact" },
-	{ value: "Trebuchet MS", label: "Trebuchet" },
-	{ value: "Brush Script MT", label: "Brush Script" },
 ];
 
 export function ElementControls({
@@ -72,261 +55,257 @@ export function ElementControls({
 	onMoveLayer,
 	onCenter,
 	onClose,
-	overlayColor,
-	overlayOpacity,
-	onSetOverlayColor,
-	onSetOverlayOpacity,
 }: ElementControlsProps) {
 	return (
-		<div className='fixed bottom-20 left-0 right-0 h-auto max-h-[35vh] bg-background/90 backdrop-blur-md border-t border-border shadow-2xl z-50 flex flex-col rounded-t-xl'>
-			{/* Handle bar for bottom sheet feel */}
-			<div
-				className='w-full flex justify-center pt-2 pb-1'
-				onClick={onClose}>
-				<div className='w-12 h-1.5 bg-muted rounded-full cursor-pointer' />
-			</div>
-
-			<div className='flex items-center justify-between px-3 py-1.5 border-b bg-transparent'>
+		<div className='fixed bottom-0 left-0 right-0 md:bottom-6 md:left-1/2 md:-translate-x-1/2 md:w-auto md:min-w-[400px] md:max-w-[600px] bg-background/95 backdrop-blur-md border-t md:border border-border shadow-2xl z-50 flex flex-col md:rounded-xl overflow-hidden transition-all duration-300 pb-[env(safe-area-inset-bottom)]'>
+			{/* Compact Header */}
+			<div className='flex items-center justify-between px-3 py-1.5 border-b bg-muted/50'>
 				<div className='flex items-center gap-2'>
-					<h3 className='font-bold text-xs flex items-center gap-2'>
+					<span className='text-muted-foreground'>
 						{element.type === "text" ? (
-							<Type className='w-4 h-4' />
+							<Type className='w-3 h-3' />
 						) : (
-							<Palette className='w-4 h-4' />
+							<Palette className='w-3 h-3' />
 						)}
-						Edit {element.type === "text" ? "Text" : "Image"}
-					</h3>
+					</span>
+					<span className='text-[10px] font-semibold uppercase tracking-wider text-muted-foreground'>
+						{element.type === "text" ? "Edit Text" : "Edit Image"}
+					</span>
 				</div>
-				<div className='flex gap-1'>
+				<div className='flex items-center gap-0.5'>
 					<Button
 						variant='ghost'
-						size='icon-sm'
+						size='icon'
 						onClick={onClone}
-						title='Duplicate'
-						className='h-7 w-7 rounded-full hover:bg-muted'>
-						<Copy className='w-4 h-4' />
+						className='h-6 w-6 rounded-full hover:bg-muted'
+						title='Duplicate'>
+						<Copy className='w-3 h-3' />
 					</Button>
 					<Button
 						variant='ghost'
-						size='icon-sm'
+						size='icon'
 						onClick={onDelete}
-						title='Delete'
-						className='h-7 w-7 rounded-full text-destructive hover:text-destructive hover:bg-destructive/10'>
-						<Trash2 className='w-4 h-4' />
+						className='h-6 w-6 rounded-full text-destructive hover:bg-destructive/10'
+						title='Delete'>
+						<Trash2 className='w-3 h-3' />
 					</Button>
+					<div className='w-px h-3 bg-border mx-1' />
 					<Button
 						variant='ghost'
-						size='icon-sm'
+						size='icon'
 						onClick={onClose}
-						className='h-7 w-7 rounded-full hover:bg-muted'>
-						<X className='w-4 h-4' />
+						className='h-6 w-6 rounded-full hover:bg-muted'
+						title='Close'>
+						<X className='w-3.5 h-3.5' />
 					</Button>
 				</div>
 			</div>
 
-			<div className='overflow-y-auto p-2 space-y-3 pb-4'>
-				{/* Text Specific Controls */}
+			<div className='p-2 md:p-3 space-y-2'>
+				{/* Text Controls */}
 				{element.type === "text" && (
-					<div className='space-y-4'>
-						<div className='space-y-2'>
-							<Input
-								value={element.content}
-								onChange={(e) =>
-									onUpdate({ content: e.target.value })
-								}
-								className='text-base font-medium border-0 border-b rounded-none px-0 focus-visible:ring-0 focus-visible:border-primary bg-transparent'
-								placeholder='Enter text...'
-							/>
-						</div>
+					<div className='space-y-2'>
+						<Input
+							value={element.content}
+							onChange={(e) =>
+								onUpdate({ content: e.target.value })
+							}
+							className='h-8 text-sm font-medium bg-muted/30 border-transparent focus:border-primary focus:bg-background transition-colors'
+							placeholder='Enter text...'
+						/>
 
-						<div className='grid grid-cols-3 gap-3'>
-							<div className='space-y-1.5'>
-								<Label className='text-xs text-muted-foreground'>
-									Font
-								</Label>
-								<Select
-									value={element.fontFamily}
-									onValueChange={(value) =>
-										onUpdate({ fontFamily: value })
-									}>
-									<SelectTrigger className='h-8 text-xs'>
-										<SelectValue />
-									</SelectTrigger>
-									<SelectContent>
-										{FONT_FAMILIES.map((font) => (
-											<SelectItem
-												key={font.value}
-												value={font.value}
-												style={{
-													fontFamily: font.value,
-												}}
-												className='text-xs'>
-												{font.label}
-											</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
-							</div>
+						<div className='flex flex-wrap gap-2'>
+							{/* Font Family */}
+							<Select
+								value={element.fontFamily}
+								onValueChange={(value) =>
+									onUpdate({ fontFamily: value })
+								}>
+								<SelectTrigger className='h-8 w-[110px] text-xs bg-muted/30 border-transparent'>
+									<SelectValue />
+								</SelectTrigger>
+								<SelectContent>
+									{FONT_FAMILIES.map((font) => (
+										<SelectItem
+											key={font.value}
+											value={font.value}
+											style={{ fontFamily: font.value }}
+											className='text-xs'>
+											{font.label}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
 
-							<div className='space-y-1.5'>
-								<Label className='text-xs text-muted-foreground'>
-									Style
-								</Label>
-								<div className='flex gap-1 bg-muted/50 p-1 rounded-lg'>
-									<Button
-										variant={
-											element.fontWeight === "bold"
-												? "default"
-												: "ghost"
-										}
-										size='icon-sm'
-										onClick={() =>
-											onUpdate({
-												fontWeight:
-													element.fontWeight ===
-													"bold"
-														? "normal"
-														: "bold",
-											})
-										}
-										className='flex-1 h-6 w-auto'>
-										<Bold className='w-3.5 h-3.5' />
-									</Button>
-									<Button
-										variant={
-											element.fontStyle === "italic"
-												? "default"
-												: "ghost"
-										}
-										size='icon-sm'
-										onClick={() =>
-											onUpdate({
-												fontStyle:
-													element.fontStyle ===
-													"italic"
-														? "normal"
-														: "italic",
-											})
-										}
-										className='flex-1 h-6 w-auto'>
-										<Italic className='w-3.5 h-3.5' />
-									</Button>
-								</div>
-							</div>
-
-							<div className='space-y-1.5'>
-								<Label className='text-xs text-muted-foreground'>
+							{/* Size */}
+							<div className='flex items-center gap-2 px-2 bg-muted/30 rounded-md h-8 flex-1 min-w-[120px]'>
+								<span className='text-[10px] text-muted-foreground uppercase font-bold'>
 									Size
-								</Label>
-								<div className='flex items-center gap-2'>
-									<Slider
-										value={[element.fontSize || 12]}
-										min={10}
-										max={200}
-										step={1}
-										onValueChange={(vals) =>
-											onUpdate({ fontSize: vals[0] })
-										}
-										className='flex-1'
-									/>
-									<span className='text-xs w-7 text-right font-mono'>
-										{element.fontSize}
-									</span>
-								</div>
+								</span>
+								<Slider
+									value={[element.fontSize || 12]}
+									min={10}
+									max={200}
+									step={1}
+									onValueChange={(vals) =>
+										onUpdate({ fontSize: vals[0] })
+									}
+									className='flex-1 w-20'
+								/>
+								<span className='text-[10px] w-6 text-right font-mono'>
+									{element.fontSize}
+								</span>
 							</div>
-						</div>
 
-						<div className='flex items-center justify-between gap-4'>
-							<div className='flex-1 space-y-1.5'>
-								<Label className='text-xs text-muted-foreground'>
-									Color
-								</Label>
-								<div className='flex gap-2 items-center'>
-									<div className='relative w-8 h-8 rounded-full overflow-hidden border shadow-sm cursor-pointer'>
-										<Input
-											type='color'
-											value={element.color}
-											className='absolute inset-0 w-[150%] h-[150%] -top-[25%] -left-[25%] p-0 border-0 cursor-pointer'
-											onChange={(e) =>
-												onUpdate({
-													color: e.target.value,
-												})
-											}
-										/>
-									</div>
+							{/* Color */}
+							<div className='flex items-center gap-2 bg-muted/30 rounded-md pl-2 pr-1 h-8'>
+								<div className='relative w-4 h-4 rounded-full overflow-hidden border shadow-sm cursor-pointer'>
 									<Input
+										type='color'
 										value={element.color}
+										className='absolute inset-0 w-[150%] h-[150%] -top-[25%] -left-[25%] p-0 border-0 cursor-pointer opacity-0'
 										onChange={(e) =>
 											onUpdate({ color: e.target.value })
 										}
-										className='flex-1 h-7 text-xs font-mono uppercase'
+									/>
+									<div
+										className='absolute inset-0 w-full h-full pointer-events-none'
+										style={{
+											backgroundColor: element.color,
+										}}
 									/>
 								</div>
 							</div>
+						</div>
 
-							<div className='flex-1 space-y-1.5'>
-								<Label className='text-xs text-muted-foreground'>
-									Text Align
-								</Label>
-								<div className='flex gap-1'>
-									<Button
-										variant='ghost'
-										size='icon-sm'
-										className='h-6 w-6'
-										onClick={() =>
-											onUpdate({
-												x: (element.x || 0) - 10,
-											})
-										}>
-										<ChevronLeft className='w-3.5 h-3.5' />
-									</Button>
-									<Button
-										variant='ghost'
-										size='icon-sm'
-										className='h-6 w-6'
-										onClick={() =>
-											onUpdate({
-												x: (element.x || 0) + 10,
-											})
-										}>
-										<ChevronRight className='w-3.5 h-3.5' />
-									</Button>
-									<Button
-										variant='ghost'
-										size='icon-sm'
-										className='h-6 w-6'
-										onClick={() =>
-											onUpdate({
-												y: (element.y || 0) - 10,
-											})
-										}>
-										<ChevronUp className='w-3.5 h-3.5' />
-									</Button>
-									<Button
-										variant='ghost'
-										size='icon-sm'
-										className='h-6 w-6'
-										onClick={() =>
-											onUpdate({
-												y: (element.y || 0) + 10,
-											})
-										}>
-										<ChevronDown className='w-3.5 h-3.5' />
-									</Button>
-								</div>
+						<div className='flex items-center justify-between gap-2'>
+							{/* Style Buttons */}
+							<div className='flex bg-muted/30 rounded-md p-0.5 gap-0.5'>
+								<Button
+									variant={
+										element.fontWeight === "bold"
+											? "secondary"
+											: "ghost"
+									}
+									size='icon'
+									onClick={() =>
+										onUpdate({
+											fontWeight:
+												element.fontWeight === "bold"
+													? "normal"
+													: "bold",
+										})
+									}
+									className='h-7 w-7'>
+									<Bold className='w-3 h-3' />
+								</Button>
+								<Button
+									variant={
+										element.fontStyle === "italic"
+											? "secondary"
+											: "ghost"
+									}
+									size='icon'
+									onClick={() =>
+										onUpdate({
+											fontStyle:
+												element.fontStyle === "italic"
+													? "normal"
+													: "italic",
+										})
+									}
+									className='h-7 w-7'>
+									<Italic className='w-3 h-3' />
+								</Button>
+							</div>
+
+							{/* Alignment */}
+							<div className='flex bg-muted/30 rounded-md p-0.5 gap-0.5'>
+								<Button
+									variant={
+										element.textAlign === "left"
+											? "secondary"
+											: "ghost"
+									}
+									size='icon'
+									onClick={() =>
+										onUpdate({ textAlign: "left" })
+									}
+									className='h-7 w-7'>
+									<AlignLeft className='w-3 h-3' />
+								</Button>
+								<Button
+									variant={
+										element.textAlign === "center"
+											? "secondary"
+											: "ghost"
+									}
+									size='icon'
+									onClick={() =>
+										onUpdate({ textAlign: "center" })
+									}
+									className='h-7 w-7'>
+									<AlignCenter className='w-3 h-3' />
+								</Button>
+								<Button
+									variant={
+										element.textAlign === "right"
+											? "secondary"
+											: "ghost"
+									}
+									size='icon'
+									onClick={() =>
+										onUpdate({ textAlign: "right" })
+									}
+									className='h-7 w-7'>
+									<AlignRight className='w-3 h-3' />
+								</Button>
+							</div>
+
+							{/* Layer/Move Actions */}
+							<div className='flex bg-muted/30 rounded-md p-0.5 gap-0.5 ml-auto'>
+								<Button
+									variant='ghost'
+									size='icon'
+									onClick={onCenter}
+									className='h-7 w-7'
+									title='Center'>
+									<Move className='w-3 h-3' />
+								</Button>
+								<Button
+									variant='ghost'
+									size='icon'
+									onClick={() => onMoveLayer("top")}
+									className='h-7 w-auto px-2 text-[10px]'
+									title='Bring to Front'>
+									Front
+								</Button>
+								<Button
+									variant='ghost'
+									size='icon'
+									onClick={() => onMoveLayer("bottom")}
+									className='h-7 w-auto px-2 text-[10px]'
+									title='Send to Back'>
+									Back
+								</Button>
 							</div>
 						</div>
 					</div>
 				)}
 
+				{/* Image Controls */}
 				{element.type === "image" && (
-					<div className='space-y-3'>
-						<div className='grid grid-cols-2 gap-2'>
-							<div className='space-y-1.5'>
-								<Label className='text-xs text-muted-foreground'>
-									Width
-								</Label>
-								<div className='flex items-center gap-2'>
+					<div className='space-y-2'>
+						{/* Size Controls Row */}
+						<div className='flex items-center gap-2 bg-muted/30 p-1.5 rounded-md'>
+							<Label className='text-[10px] text-muted-foreground uppercase min-w-[40px]'>
+								Size
+							</Label>
+							<div className='flex flex-1 gap-2'>
+								<div className='flex items-center gap-1 flex-1'>
+									<span className='text-[9px] text-muted-foreground'>
+										W
+									</span>
 									<Slider
 										value={[element.width || 200]}
 										min={50}
@@ -343,16 +322,11 @@ export function ElementControls({
 										}}
 										className='flex-1'
 									/>
-									<span className='text-xs w-10 text-right font-mono'>
-										{element.width || 200}
-									</span>
 								</div>
-							</div>
-							<div className='space-y-1.5'>
-								<Label className='text-xs text-muted-foreground'>
-									Height
-								</Label>
-								<div className='flex items-center gap-2'>
+								<div className='flex items-center gap-1 flex-1'>
+									<span className='text-[9px] text-muted-foreground'>
+										H
+									</span>
 									<Slider
 										value={[element.height || 200]}
 										min={50}
@@ -369,133 +343,97 @@ export function ElementControls({
 										}}
 										className='flex-1'
 									/>
-									<span className='text-xs w-10 text-right font-mono'>
-										{element.height || 200}
-									</span>
 								</div>
 							</div>
 						</div>
 
-						<div className='space-y-2'>
-							<Label className='text-xs text-muted-foreground'>
-								Overlay
-							</Label>
-							<div className='flex items-center justify-between'>
-								<div className='relative'>
+						{/* Overlay Controls */}
+						<div className='bg-muted/30 p-1.5 rounded-md flex items-center gap-3'>
+							<div className='flex items-center gap-2 min-w-fit'>
+								<Label className='text-[10px] text-muted-foreground uppercase'>
+									Overlay
+								</Label>
+								<div className='relative w-5 h-5 rounded-full border border-border overflow-hidden cursor-pointer shadow-sm'>
 									<input
 										type='color'
-										value={overlayColor || "#000000"}
-										onChange={(e) =>
-											onSetOverlayColor?.(e.target.value)
+										value={
+											element.overlayColor || "#000000"
 										}
-										className='absolute inset-0 opacity-0 cursor-pointer w-full h-full'
+										onChange={(e) =>
+											onUpdate({
+												overlayColor: e.target.value,
+											})
+										}
+										className='absolute inset-0 w-[150%] h-[150%] -top-[25%] -left-[25%] p-0 border-0 opacity-0 cursor-pointer'
 									/>
-									<Button
-										variant='ghost'
-										size='sm'
-										className='h-6 text-xs px-2 gap-1 bg-muted/50'>
-										<Palette className='w-3 h-3' />
-										Color
-									</Button>
+									<div
+										className='w-full h-full pointer-events-none'
+										style={{
+											backgroundColor:
+												element.overlayColor ||
+												"#000000",
+										}}
+									/>
 								</div>
-								<span
-									className='w-4 h-4 rounded-full border border-border'
-									style={{
-										backgroundColor:
-											overlayColor || "#000000",
-									}}
-								/>
 							</div>
-							<div className='flex items-center gap-2'>
-								<span className='text-xs text-muted-foreground'>
+
+							<div className='flex items-center gap-2 flex-1'>
+								<span className='text-[10px] text-muted-foreground whitespace-nowrap'>
 									Opacity
 								</span>
 								<Slider
 									value={[
 										Math.round(
-											((overlayOpacity || 0) as number) *
-												100
+											((element.overlayOpacity ||
+												0) as number) * 100
 										),
 									]}
 									min={0}
 									max={100}
 									step={1}
 									onValueChange={(vals) =>
-										onSetOverlayOpacity?.(
-											(vals[0] || 0) / 100
-										)
+										onUpdate({
+											overlayOpacity:
+												(vals[0] || 0) / 100,
+										})
 									}
 									className='flex-1'
 								/>
-								<span className='text-xs font-mono w-8 text-right'>
-									{Math.round((overlayOpacity || 0) * 100)}%
+								<span className='text-[10px] font-mono w-6 text-right'>
+									{Math.round(
+										(element.overlayOpacity || 0) * 100
+									)}
+									%
 								</span>
 							</div>
 						</div>
+
+						{/* Common Actions */}
+						<div className='flex items-center gap-2'>
+							<Button
+								variant='outline'
+								size='sm'
+								className='flex-1 h-7 text-[10px] bg-transparent border-dashed'
+								onClick={onCenter}>
+								<Move className='w-3 h-3 mr-1' /> Center
+							</Button>
+							<Button
+								variant='outline'
+								size='sm'
+								className='flex-1 h-7 text-[10px] bg-transparent border-dashed'
+								onClick={() => onMoveLayer("top")}>
+								To Front
+							</Button>
+							<Button
+								variant='outline'
+								size='sm'
+								className='flex-1 h-7 text-[10px] bg-transparent border-dashed'
+								onClick={() => onMoveLayer("bottom")}>
+								To Back
+							</Button>
+						</div>
 					</div>
 				)}
-
-				<div className='space-y-3 pt-2 border-t'>
-					<Label className='text-xs text-muted-foreground uppercase tracking-wider'>
-						Layout & Position
-					</Label>
-
-					<div className='grid grid-cols-2 gap-3'>
-						{element.type === "text" && (
-							<div className='bg-muted/30 p-2 rounded-lg flex justify-between items-center'>
-								<div className='flex gap-1'>
-									<Button
-										variant={
-											element.textAlign === "left"
-												? "secondary"
-												: "ghost"
-										}
-										size='icon-sm'
-										className='h-6 w-6'
-										onClick={() =>
-											onUpdate({ textAlign: "left" })
-										}>
-										<AlignLeft className='w-3.5 h-3.5' />
-									</Button>
-									<Button
-										variant={
-											element.textAlign === "center"
-												? "secondary"
-												: "ghost"
-										}
-										size='icon-sm'
-										className='h-6 w-6'
-										onClick={() =>
-											onUpdate({ textAlign: "center" })
-										}>
-										<AlignCenter className='w-3.5 h-3.5' />
-									</Button>
-									<Button
-										variant={
-											element.textAlign === "right"
-												? "secondary"
-												: "ghost"
-										}
-										size='icon-sm'
-										className='h-6 w-6'
-										onClick={() =>
-											onUpdate({ textAlign: "right" })
-										}>
-										<AlignRight className='w-3.5 h-3.5' />
-									</Button>
-									<Button
-										variant='ghost'
-										size='sm'
-										className='h-7 px-2 text-xs gap-1'
-										onClick={onCenter}>
-										<Move className='w-3 h-3' />
-										Center
-									</Button>
-								</div>
-							</div>
-						)}
-					</div>
-				</div>
 			</div>
 		</div>
 	);
