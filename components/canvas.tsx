@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import type { CanvasElement, AspectRatio } from "@/types/index";
-import { cn } from "@/lib/utils";
 
 interface CanvasProps {
 	elements: CanvasElement[];
@@ -185,6 +184,30 @@ export function Canvas({
 		};
 	};
 
+	// --- Helper to calculate text bounds ---
+	const getTextBounds = (
+		ctx: CanvasRenderingContext2D,
+		element: CanvasElement
+	) => {
+		ctx.font = `${element.fontStyle || ""} ${
+			element.fontWeight || "normal"
+		} ${element.fontSize}px ${element.fontFamily || "Inter"}`;
+		const metrics = ctx.measureText(element.content || "");
+		const width = metrics.width;
+		const height = (element.fontSize || 32) * 1.2; // Approximate line height
+
+		let x = element.x;
+		const align = (element.textAlign as CanvasTextAlign) || "left";
+
+		if (align === "center") {
+			x = element.x - width / 2;
+		} else if (align === "right") {
+			x = element.x - width;
+		}
+
+		return { x, y: element.y, width, height };
+	};
+
 	const handleCanvasStart = (
 		e:
 			| React.MouseEvent<HTMLCanvasElement>
@@ -199,18 +222,14 @@ export function Canvas({
 		for (let i = elements.length - 1; i >= 0; i--) {
 			const element = elements[i];
 			if (element.type === "text") {
-				ctx.font = `${element.fontStyle || ""} ${
-					element.fontWeight || "normal"
-				} ${element.fontSize}px ${element.fontFamily || "Inter"}`;
-				const metrics = ctx.measureText(element.content || "");
-				const textHeight = element.fontSize || 32;
+				const bounds = getTextBounds(ctx, element);
 				const padding = 20;
 
 				if (
-					pos.x >= element.x - padding &&
-					pos.x <= element.x + metrics.width + padding &&
-					pos.y >= element.y - padding &&
-					pos.y <= element.y + textHeight + padding
+					pos.x >= bounds.x - padding &&
+					pos.x <= bounds.x + bounds.width + padding &&
+					pos.y >= bounds.y - padding &&
+					pos.y <= bounds.y + bounds.height + padding
 				) {
 					setDragging(element.id);
 					setDragOffset({
@@ -293,6 +312,18 @@ export function Canvas({
 		const initialH = element.height || 200;
 		const initialFontSize = element.fontSize || 32;
 
+		// Get initial text dimensions for accurate resizing
+		let initialTextWidth = 0;
+		let initialTextHeight = 0;
+		if (element.type === "text") {
+			const ctx = canvasRef.current?.getContext("2d");
+			if (ctx) {
+				const bounds = getTextBounds(ctx, element);
+				initialTextWidth = bounds.width;
+				initialTextHeight = bounds.height;
+			}
+		}
+
 		const onPointerMove = (moveEvent: PointerEvent) => {
 			moveEvent.preventDefault();
 
@@ -340,35 +371,39 @@ export function Canvas({
 				updates.width = newW;
 				updates.height = newH;
 			} else if (element.type === "text") {
-				// For text, we mainly scale font size based on height change
-				// Simple implementation: Drag corner to scale font size
-				let scaleFactor = 1;
+				let scaleW = 1;
+				let scaleH = 1;
 
-				if (direction.includes("b") || direction.includes("r")) {
-					// Dragging bottom/right: use distance from top-left
-					// We use vertical delta primarily
-					const currentHeight = initialFontSize * 1.2; // approx height
-					const newHeight = currentHeight + deltaY;
-					if (newHeight > 10) {
-						scaleFactor = newHeight / currentHeight;
-					}
-				} else if (direction.includes("t") || direction.includes("l")) {
-					// Dragging top/left: complicated because we need to move x/y too
-					// Simplified: just prevent top/left resizing for text or handle it better
-					// Let's allow resizing but keep it simple
-					const currentHeight = initialFontSize * 1.2;
-					const newHeight = currentHeight - deltaY;
-					if (newHeight > 10) {
-						scaleFactor = newHeight / currentHeight;
-						// Adjust Y to keep bottom fixed? Or adjust Y to follow top?
-						// If we change font size, text grows down.
-						// If we drag top handle up, we want text to grow up.
-						// So we need to move Y up by the difference in height.
-						updates.y = initialY + deltaY;
-					}
+				if (direction.includes("l")) {
+					scaleW = (initialTextWidth - deltaX) / initialTextWidth;
+				} else if (direction.includes("r")) {
+					scaleW = (initialTextWidth + deltaX) / initialTextWidth;
 				}
 
+				if (direction.includes("t")) {
+					scaleH = (initialTextHeight - deltaY) / initialTextHeight;
+				} else if (direction.includes("b")) {
+					scaleH = (initialTextHeight + deltaY) / initialTextHeight;
+				}
+
+				// Use the dimension with the largest change to drive the scale
+				// This allows natural resizing from any corner/direction
+				const devW = Math.abs(scaleW - 1);
+				const devH = Math.abs(scaleH - 1);
+				// If dragging a corner, usually we want to follow the larger movement
+				// But we default to 1 if no change in that direction (e.g. pure vertical drag)
+				let scaleFactor = devW > devH ? scaleW : scaleH;
+
+				// Fallback if no change (e.g. click)
+				if (scaleFactor <= 0) scaleFactor = 0.1; // Prevent 0 or negative
+
 				updates.fontSize = initialFontSize * scaleFactor;
+
+				// Adjust Y if dragging top to keep bottom fixed
+				if (direction.includes("t")) {
+					updates.y =
+						initialY + initialTextHeight * (1 - scaleFactor);
+				}
 			}
 
 			onUpdateElements(
@@ -401,26 +436,20 @@ export function Canvas({
 			w = el.width || 200;
 			h = el.height || 200;
 		} else {
-			// For text, we need to measure it.
-			// Since we don't have the canvas context here easily during render,
-			// we can approximate or use a hidden canvas / ref.
-			// Better: store metrics in the element or recalculate using a temp ctx.
 			const canvas = canvasRef.current;
 			const ctx = canvas?.getContext("2d");
 			if (ctx) {
-				ctx.font = `${el.fontStyle || ""} ${
-					el.fontWeight || "normal"
-				} ${el.fontSize}px ${el.fontFamily || "Inter"}`;
-				const metrics = ctx.measureText(el.content || "");
-				const textHeight = el.fontSize || 32;
-				w = metrics.width;
-				h = textHeight * 1.2;
+				const bounds = getTextBounds(ctx, el);
+				x = bounds.x;
+				y = bounds.y;
+				w = bounds.width;
+				h = bounds.height;
 			} else {
 				w = 100;
 				h = 50;
+				x = el.x;
+				y = el.y;
 			}
-			x = el.x;
-			y = el.y;
 		}
 
 		return { x, y, w, h };

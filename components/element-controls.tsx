@@ -57,7 +57,7 @@ export function ElementControls({
 	onClose,
 }: ElementControlsProps) {
 	return (
-		<div className='fixed bottom-0 left-0 right-0 md:bottom-6 md:left-1/2 md:-translate-x-1/2 md:w-auto md:min-w-[400px] md:max-w-[600px] bg-background/95 backdrop-blur-md border-t md:border border-border shadow-2xl z-50 flex flex-col md:rounded-xl overflow-hidden transition-all duration-300 pb-[env(safe-area-inset-bottom)]'>
+		<div className='fixed bottom-[75px] left-0 right-0 md:bottom-6 md:left-1/2 md:-translate-x-1/2 md:w-auto md:min-w-[400px] md:max-w-[600px] bg-background/95 backdrop-blur-md border-t md:border border-border shadow-2xl z-50 flex flex-col md:rounded-xl overflow-hidden transition-all duration-300 pb-[env(safe-area-inset-bottom)]'>
 			{/* Compact Header */}
 			<div className='flex items-center justify-between px-3 py-1.5 border-b bg-muted/50'>
 				<div className='flex items-center gap-2'>
@@ -153,7 +153,7 @@ export function ElementControls({
 									className='flex-1 w-20'
 								/>
 								<span className='text-[10px] w-6 text-right font-mono'>
-									{element.fontSize}
+									{element.fontSize?.toFixed(2)}
 								</span>
 							</div>
 
