@@ -42,8 +42,6 @@ export function Editor({
 	backgroundColor,
 	overlayColor,
 	overlayOpacity,
-	setOverlayColor,
-	setOverlayOpacity,
 	selectedElement,
 	setSelectedElement,
 }: EditorProps) {

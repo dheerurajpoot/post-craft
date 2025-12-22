@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import {
 	Select,
@@ -105,12 +106,12 @@ export function ElementControls({
 				{/* Text Controls */}
 				{element.type === "text" && (
 					<div className='space-y-2'>
-						<Input
+						<Textarea
 							value={element.content}
 							onChange={(e) =>
 								onUpdate({ content: e.target.value })
 							}
-							className='h-8 text-sm font-medium bg-muted/30 border-transparent focus:border-primary focus:bg-background transition-colors'
+							className='min-h-[60px] text-sm font-medium bg-muted/30 border-transparent focus:border-primary focus:bg-background transition-colors resize-none'
 							placeholder='Enter text...'
 						/>
 

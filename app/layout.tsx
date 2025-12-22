@@ -98,13 +98,15 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang='en'>
-			<head>
+		<html lang='en' suppressHydrationWarning>
+			<head suppressHydrationWarning>
 				<meta
 					name='viewport'
 					content='initial-scale=1, viewport-fit=cover, width=device-width'></meta>
 			</head>
-			<body className={`font-sans antialiased`}>{children}</body>
+			<body className={`font-sans antialiased`} suppressHydrationWarning>
+				{children}
+			</body>
 		</html>
 	);
 }

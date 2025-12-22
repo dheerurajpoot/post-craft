@@ -127,7 +127,15 @@ export function Canvas({
 				ctx.textAlign =
 					(element.textAlign as CanvasTextAlign) || "left";
 				ctx.textBaseline = "top";
-				ctx.fillText(element.content || "", element.x, element.y);
+
+				const bounds = getTextBounds(ctx, element);
+				bounds.lines.forEach((line, index) => {
+					ctx.fillText(
+						line,
+						element.x,
+						element.y + index * bounds.lineHeight
+					);
+				});
 			} else if (element.type === "image" && element.src) {
 				const img = imageCache[element.src];
 				if (img && img.complete) {
@@ -184,6 +192,36 @@ export function Canvas({
 		};
 	};
 
+	// --- Helper to measure and wrap text ---
+	const getWrappedText = (
+		ctx: CanvasRenderingContext2D,
+		element: CanvasElement,
+		maxWidth: number
+	) => {
+		const text = element.content || "";
+		const lines = text.split("\n");
+		const wrappedLines: string[] = [];
+
+		lines.forEach((line) => {
+			const words = line.split(" ");
+			let currentLine = words[0];
+
+			for (let i = 1; i < words.length; i++) {
+				const word = words[i];
+				const width = ctx.measureText(currentLine + " " + word).width;
+				if (width < maxWidth) {
+					currentLine += " " + word;
+				} else {
+					wrappedLines.push(currentLine);
+					currentLine = word;
+				}
+			}
+			wrappedLines.push(currentLine);
+		});
+
+		return wrappedLines;
+	};
+
 	// --- Helper to calculate text bounds ---
 	const getTextBounds = (
 		ctx: CanvasRenderingContext2D,
@@ -192,20 +230,36 @@ export function Canvas({
 		ctx.font = `${element.fontStyle || ""} ${
 			element.fontWeight || "normal"
 		} ${element.fontSize}px ${element.fontFamily || "Inter"}`;
-		const metrics = ctx.measureText(element.content || "");
-		const width = metrics.width;
-		const height = (element.fontSize || 32) * 1.2; // Approximate line height
+
+		const padding = 40; // Horizontal padding for canvas edges
+		const maxWidth = (canvasRef.current?.width || 1080) - padding;
+		const lines = getWrappedText(ctx, element, maxWidth);
+
+		let maxLineWidth = 0;
+		lines.forEach((line) => {
+			const w = ctx.measureText(line).width;
+			if (w > maxLineWidth) maxLineWidth = w;
+		});
+
+		const lineHeight = (element.fontSize || 32) * 1.2;
+		const totalHeight = lines.length * lineHeight;
+		const width = maxLineWidth;
+		const height = totalHeight;
 
 		let x = element.x;
 		const align = (element.textAlign as CanvasTextAlign) || "left";
 
+		// Alignment logic for the bounding box itself is tricky because
+		// x represents the anchor point.
+		// If align is center, x is the center of the text block.
+		// If align is right, x is the right edge.
 		if (align === "center") {
 			x = element.x - width / 2;
 		} else if (align === "right") {
 			x = element.x - width;
 		}
 
-		return { x, y: element.y, width, height };
+		return { x, y: element.y, width, height, lines, lineHeight, maxWidth };
 	};
 
 	const handleCanvasStart = (
