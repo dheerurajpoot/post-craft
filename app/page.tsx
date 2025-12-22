@@ -84,26 +84,9 @@ export default function Home() {
 		setActiveTab("editor");
 	};
 
-	const handleAddBackground = (newElement: CanvasElement) => {
-		// Resize background to fit current aspect ratio
-		const dimensions = {
-			"1:1": { width: 1080, height: 1080 },
-			"4:5": { width: 1080, height: 1350 },
-			"9:16": { width: 1080, height: 1920 },
-			"16:9": { width: 1920, height: 1080 },
-		}[aspectRatio];
-
-		const backgroundElement = {
-			...newElement,
-			x: 0,
-			y: 0,
-			width: dimensions.width,
-			height: dimensions.height,
-			id: "bg-" + Date.now(), // Ensure unique ID
-		};
-
-		// Add to the beginning (bottom layer) so it doesn't cover text
-		setElements((prev) => [backgroundElement, ...prev]);
+	const handleAddImage = (newElement: CanvasElement) => {
+		// Add as a new layer on top
+		setElements((prev) => [...prev, newElement]);
 		setActiveTab("editor");
 	};
 
@@ -167,7 +150,7 @@ export default function Home() {
 				)}
 				{activeTab === "backgrounds" && (
 					<Backgrounds
-						onAddBackground={handleAddBackground}
+						onAddBackground={handleAddImage}
 						onSetBackgroundColor={handleSetBackgroundColor}
 						overlayColor={overlayColor}
 						overlayOpacity={overlayOpacity}

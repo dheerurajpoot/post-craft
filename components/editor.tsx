@@ -7,6 +7,7 @@ import {
 	Trash2,
 	Type,
 	Layout,
+	LayoutTemplate,
 	Heading1,
 	Heading2,
 	Heading3,
@@ -16,6 +17,7 @@ import {
 import { Canvas } from "@/components/canvas";
 import { ElementControls } from "@/components/element-controls";
 import { RatioSelector } from "@/components/ratio-selector";
+import { templates } from "@/components/templates";
 import type { CanvasElement, AspectRatio } from "@/types/index";
 import { cn } from "@/lib/utils";
 
@@ -40,15 +42,34 @@ export function Editor({
 	aspectRatio,
 	setAspectRatio,
 	backgroundColor,
+	setBackgroundColor,
 	overlayColor,
 	overlayOpacity,
 	selectedElement,
 	setSelectedElement,
 }: EditorProps) {
 	const [showControls, setShowControls] = useState(false);
-	const [activeMenu, setActiveMenu] = useState<"text" | "resize" | null>(
-		null
-	);
+	const [activeMenu, setActiveMenu] = useState<
+		"text" | "resize" | "templates" | null
+	>(null);
+
+	const handleApplyTemplate = (templateId: string) => {
+		const template = templates.find((t) => t.id === templateId);
+		if (!template) return;
+
+		if (
+			confirm(
+				"Applying a template will replace current content. Continue?"
+			)
+		) {
+			setElements(template.elements);
+			setAspectRatio(template.aspectRatio);
+			setBackgroundColor(template.backgroundColor);
+			// Reset selection and menu
+			setSelectedElement(null);
+			setActiveMenu(null);
+		}
+	};
 
 	const addText = (variant: "h1" | "h2" | "h3" | "h4" | "p") => {
 		// Calculate center based on aspect ratio
@@ -244,13 +265,14 @@ export function Editor({
 		if (confirm("Are you sure you want to clear the canvas?")) {
 			setElements([]);
 			setSelectedElement(null);
+			setBackgroundColor("#ffffff");
 		}
 	};
 
 	return (
 		<div className='flex flex-col h-full bg-gray-50 dark:bg-gray-950'>
 			{/* Top Bar: Actions */}
-			<div className='h-14 border-b bg-background/95 backdrop-blur px-4 flex items-center justify-between shrink-0 z-10'>
+			{/* <div className='h-14 border-b bg-background/95 backdrop-blur px-4 flex items-center justify-between shrink-0 z-10'>
 				<Button
 					variant='ghost'
 					size='sm'
@@ -272,7 +294,7 @@ export function Editor({
 					<Download className='w-4 h-4 mr-2' />
 					Save
 				</Button>
-			</div>
+			</div> */}
 
 			{/* Main Canvas Area */}
 			<div
@@ -297,6 +319,7 @@ export function Editor({
 			{/* Bottom Bar: Tools */}
 			<div className='bg-background/95 backdrop-blur border-t shrink-0 pb-[env(safe-area-inset-bottom)] relative z-20'>
 				{/* Popover Menus */}
+
 				{activeMenu === "text" && (
 					<div className='absolute bottom-full left-0 right-0 p-4 bg-background/95 backdrop-blur border-t border-b shadow-xl animate-in slide-in-from-bottom-5'>
 						<div className='flex flex-col gap-2 max-w-sm mx-auto'>
@@ -434,6 +457,15 @@ export function Editor({
 							)}
 						/>
 						<span className='text-[10px] font-medium'>Text</span>
+					</Button>
+					<div className='w-px h-8 bg-border/50' />
+
+					<Button
+						size='sm'
+						onClick={downloadImage}
+						className='h-9 px-4 bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm rounded-full'>
+						<Download className='w-4 h-4 mr-2' />
+						Save
 					</Button>
 				</div>
 			</div>

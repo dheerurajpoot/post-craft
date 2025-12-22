@@ -36,7 +36,7 @@ export function Backgrounds({
 	onSetOverlayColor,
 	onSetOverlayOpacity,
 }: BackgroundsProps) {
-	const [query, setQuery] = useState("nature background");
+	const [query, setQuery] = useState("roads");
 	const [photos, setPhotos] = useState<PexelsPhoto[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [localBackgroundColor, setLocalBackgroundColor] = useState("#ffffff");
@@ -52,7 +52,7 @@ export function Backgrounds({
 		setLoading(true);
 		try {
 			const response = await fetch(
-				`https://api.pexels.com/v1/search?query=${searchQuery}&per_page=20`,
+				`https://api.pexels.com/v1/search?query=${searchQuery}&per_page=30`,
 				{
 					headers: {
 						Authorization:
@@ -70,7 +70,7 @@ export function Backgrounds({
 	};
 
 	useEffect(() => {
-		searchImages("abstract background");
+		searchImages("roads");
 	}, []);
 
 	const handleSearch = (e: React.FormEvent) => {
